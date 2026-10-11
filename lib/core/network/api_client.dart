@@ -11,7 +11,7 @@ import '../errors/app_exception.dart';
 /// en una [AppException] con un mensaje listo para mostrar.
 class ApiClient {
   ApiClient({required this._settings, http.Client? httpClient})
-      : _http = httpClient ?? http.Client();
+    : _http = httpClient ?? http.Client();
 
   static const _timeout = Duration(seconds: 10);
 
@@ -34,10 +34,10 @@ class ApiClient {
   Uri _uri(String path) => Uri.parse('${_settings.serverUrl}$path');
 
   Map<String, String> get _headers => {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        if (token != null) 'Authorization': 'Bearer $token',
-      };
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    if (token != null) 'Authorization': 'Bearer $token',
+  };
 
   Future<Map<String, dynamic>> _send(
     Future<http.Response> Function() request,
@@ -64,6 +64,12 @@ class ApiClient {
     );
   }
 
+  Future<Map<String, dynamic>> put(String path, Map<String, dynamic> body) {
+    return _send(
+      () => _http.put(_uri(path), headers: _headers, body: jsonEncode(body)),
+    );
+  }
+
   Map<String, dynamic> _decode(http.Response response) {
     if (response.bodyBytes.isEmpty) return {};
     try {
@@ -87,8 +93,10 @@ class ApiClient {
     final detail = body['detail'];
     if (detail is String && detail.isNotEmpty) return detail;
 
-    if (statusCode == 401) return 'Tu sesión no es válida. Inicia sesión de nuevo.';
-    if (statusCode >= 500) return 'El servidor tuvo un problema. Intenta más tarde.';
+    if (statusCode == 401)
+      return 'Tu sesión no es válida. Inicia sesión de nuevo.';
+    if (statusCode >= 500)
+      return 'El servidor tuvo un problema. Intenta más tarde.';
     return 'Ocurrió un error inesperado';
   }
 }

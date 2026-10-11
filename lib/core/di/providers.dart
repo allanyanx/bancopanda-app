@@ -4,6 +4,9 @@ import 'package:provider/single_child_widget.dart';
 import '../../features/auth/data/datasources/remote_auth_data_source.dart';
 import '../../features/auth/data/repositories/auth_repository.dart';
 import '../../features/auth/viewmodel/auth_view_model.dart';
+import '../../features/profile/data/datasources/remote_profile_data_source.dart';
+import '../../features/profile/data/repositories/profile_repository.dart';
+import '../../features/profile/viewmodel/profile_view_model.dart';
 import '../config/app_settings.dart';
 import '../network/api_client.dart';
 import '../storage/key_value_storage.dart';
@@ -29,9 +32,17 @@ Future<List<SingleChildWidget>> createProviders() async {
   final authViewModel = AuthViewModel(authRepository);
   await authViewModel.restoreSession();
 
+  final profileViewModel = ProfileViewModel(
+    repository: ProfileRepository(RemoteProfileDataSource(apiClient)),
+    auth: authViewModel,
+    storage: storage,
+  );
+  await profileViewModel.cargarPreferencias();
+
   return [
     ChangeNotifierProvider.value(value: settings),
     ChangeNotifierProvider.value(value: authViewModel),
+    ChangeNotifierProvider.value(value: profileViewModel),
     ChangeNotifierProvider(create: (_) => ThemeViewModel()),
   ];
 }

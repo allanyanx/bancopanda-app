@@ -80,4 +80,11 @@ class AuthViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<void> actualizarUsuario(Usuario usuario) async {
+    final actual = _sesion;
+    if (actual == null) return;
+    _sesion = await _repository.actualizarUsuario(actual, usuario);
+    notifyListeners();
+  }
 }
