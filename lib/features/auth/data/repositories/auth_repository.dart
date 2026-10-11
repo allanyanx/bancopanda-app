@@ -4,6 +4,7 @@ import '../../../../core/network/api_client.dart';
 import '../../../../core/storage/key_value_storage.dart';
 import '../../model/datos_registro.dart';
 import '../../model/sesion.dart';
+import '../../model/usuario.dart';
 import '../datasources/auth_data_source.dart';
 
 /// Administra la sesión: la obtiene del datasource, la guarda cifrada en el
@@ -46,7 +47,9 @@ class AuthRepository {
     if (guardada == null) return null;
 
     try {
-      final sesion = Sesion.fromJson(jsonDecode(guardada) as Map<String, dynamic>);
+      final sesion = Sesion.fromJson(
+        jsonDecode(guardada) as Map<String, dynamic>,
+      );
       if (sesion.expirada) {
         await logout();
         return null;
@@ -67,5 +70,15 @@ class AuthRepository {
   Future<void> _save(Sesion sesion) async {
     _apiClient.token = sesion.token;
     await _storage.write(_sessionKey, jsonEncode(sesion.toJson()));
+  }
+
+  Future<Sesion> actualizarUsuario(Sesion actual, Usuario usuario) async {
+    final sesion = Sesion(
+      token: actual.token,
+      expiraEn: actual.expiraEn,
+      usuario: usuario,
+    );
+    await _save(sesion);
+    return sesion;
   }
 }

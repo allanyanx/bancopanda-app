@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/theme_view_model.dart';
 import '../../auth/viewmodel/auth_view_model.dart';
@@ -36,8 +38,9 @@ class DashboardScreen extends StatelessWidget {
                   ],
                 ),
                 textAlign: TextAlign.center,
-                style: textTheme.headlineMedium
-                    ?.copyWith(fontWeight: FontWeight.bold),
+                style: textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 8),
               Text(
@@ -56,6 +59,15 @@ class DashboardScreen extends StatelessWidget {
                 title: const Text('Modo oscuro'),
                 value: theme.isDark,
                 onChanged: theme.setDarkMode,
+              ),
+              const SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: FilledButton.icon(
+                  onPressed: () => context.push(AppRoutes.profile),
+                  icon: const Icon(Icons.person_outline),
+                  label: const Text('Mi perfil'),
+                ),
               ),
               const SizedBox(height: 12),
               TextButton(
