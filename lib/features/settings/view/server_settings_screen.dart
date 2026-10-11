@@ -8,7 +8,6 @@ import '../../../core/utils/validators.dart';
 import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/app_text_field.dart';
 
-/// Permite cambiar la dirección del backend sin recompilar la app.
 class ServerSettingsScreen extends StatefulWidget {
   const ServerSettingsScreen({super.key});
 

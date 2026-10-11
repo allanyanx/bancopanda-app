@@ -12,7 +12,6 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/in_memory_storage.dart';
 
-/// JSON con la misma forma que devuelve la API real.
 Map<String, dynamic> sesionJson({required DateTime expiraEn}) => {
       'token': 'token-de-prueba',
       'expiraEn': expiraEn.toUtc().toIso8601String(),
@@ -26,7 +25,6 @@ Map<String, dynamic> sesionJson({required DateTime expiraEn}) => {
       },
     };
 
-/// Datasource falso: responde lo que el test le indique, sin red.
 class FakeAuthDataSource implements AuthDataSource {
   AppException? error;
 
@@ -120,6 +118,7 @@ void main() {
         correo: 'prueba@bancopanda.test',
         telefono: '0987654321',
         contrasena: 'Panda2026',
+        aceptaTerminos: true,
       ),
     );
 

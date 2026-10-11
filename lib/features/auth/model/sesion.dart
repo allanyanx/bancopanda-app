@@ -1,6 +1,5 @@
 import 'usuario.dart';
 
-/// Respuesta del backend al iniciar sesión o registrarse.
 class Sesion {
   const Sesion({
     required this.token,

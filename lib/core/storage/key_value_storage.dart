@@ -1,13 +1,11 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-/// Almacenamiento local clave-valor. Los tests pueden usar una versión en memoria.
 abstract interface class KeyValueStorage {
   Future<String?> read(String key);
   Future<void> write(String key, String value);
   Future<void> delete(String key);
 }
 
-/// Guarda los datos cifrados en el dispositivo (Keystore de Android).
 class SecureKeyValueStorage implements KeyValueStorage {
   const SecureKeyValueStorage([this._storage = const FlutterSecureStorage()]);
 

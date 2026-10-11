@@ -6,8 +6,6 @@ import 'package:http/http.dart' as http;
 import '../config/app_settings.dart';
 import '../errors/app_exception.dart';
 
-/// Único punto de salida hacia el backend. Arma la URL con la dirección
-/// configurada, envía JSON, agrega el token y convierte cualquier fallo.
 class ApiClient {
   ApiClient({required this._settings, http.Client? httpClient})
     : _http = httpClient ?? http.Client();
@@ -17,7 +15,6 @@ class ApiClient {
   final AppSettings _settings;
   final http.Client _http;
 
-  /// Token JWT
   String? token;
 
   Future<Map<String, dynamic>> get(String path) {
@@ -79,7 +76,6 @@ class ApiClient {
     }
   }
 
-  /// El backend responde los errores en formato ProblemDetails
   String _errorMessage(Map<String, dynamic> body, int statusCode) {
     final errors = body['errors'];
     if (errors is Map && errors.isNotEmpty) {
@@ -90,10 +86,12 @@ class ApiClient {
     final detail = body['detail'];
     if (detail is String && detail.isNotEmpty) return detail;
 
-    if (statusCode == 401)
+    if (statusCode == 401) {
       return 'Tu sesión no es válida. Inicia sesión de nuevo.';
-    if (statusCode >= 500)
+    }
+    if (statusCode >= 500) {
       return 'El servidor tuvo un problema. Intenta más tarde.';
+    }
     return 'Ocurrió un error inesperado';
   }
 }

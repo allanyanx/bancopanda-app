@@ -15,7 +15,6 @@ abstract final class AppRoutes {
   static const profile = '/perfil';
 }
 
-/// Rutas de la app, protegidas por sesión
 GoRouter createAppRouter(AuthViewModel auth) {
   return GoRouter(
     initialLocation: AppRoutes.login,

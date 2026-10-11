@@ -1,68 +1,72 @@
 import 'package:flutter/foundation.dart';
 
 import '../../../core/errors/app_exception.dart';
-import '../../../core/storage/key_value_storage.dart';
 import '../../auth/model/usuario.dart';
 import '../../auth/viewmodel/auth_view_model.dart';
 import '../data/repositories/profile_repository.dart';
 import '../model/datos_perfil.dart';
 
 class ProfileViewModel extends ChangeNotifier {
-  ProfileViewModel({
-    required ProfileRepository repository,
-    required AuthViewModel auth,
-    required KeyValueStorage storage,
-  }) : _repository = repository,
-       _auth = auth,
-       _storage = storage;
-
-  static const _notificacionesKey = 'notificaciones';
+  ProfileViewModel({required this._repository, required this._auth});
 
   final ProfileRepository _repository;
   final AuthViewModel _auth;
-  final KeyValueStorage _storage;
 
-  bool guardando = false;
-  String? error;
-  bool notificaciones = true;
+  bool _isSaving = false;
+  String? _error;
+  bool _notificationsEnabled = true;
 
-  /// El usuario vive en la sesión; el perfil solo lo lee.
   Usuario? get usuario => _auth.usuario;
+  bool get isSaving => _isSaving;
+  String? get error => _error;
+  bool get notificationsEnabled => _notificationsEnabled;
 
-  Future<void> cargarPreferencias() async {
-    final guardada = await _storage.read(_notificacionesKey);
-    if (guardada != null) notificaciones = guardada == 'true';
+  Future<void> loadPreferences() async {
+    _notificationsEnabled = await _repository.loadNotifications();
   }
 
-  Future<void> setNotificaciones(bool valor) async {
-    notificaciones = valor;
+  Future<void> setNotifications(bool enabled) async {
+    _notificationsEnabled = enabled;
     notifyListeners();
-    await _storage.write(_notificacionesKey, valor.toString());
+    await _repository.saveNotifications(enabled);
   }
 
-  Future<bool> guardar(DatosPerfil datos) async {
-    guardando = true;
-    error = null;
-    notifyListeners();
+  Future<void> refresh() async {
     try {
-      final actualizado = await _repository.actualizar(datos);
-      await _auth.actualizarUsuario(actualizado);
+      await _auth.updateUsuario(await _repository.fetch());
+    } on AppException catch (e) {
+      if (e.statusCode == 401) await _auth.logout();
+    }
+  }
+
+  Future<bool> save(DatosPerfil datos) async {
+    if (_isSaving) return false;
+
+    _isSaving = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await _auth.updateUsuario(await _repository.update(datos));
       return true;
     } on AppException catch (e) {
-      error = e.message;
-      if (e.statusCode == 401) await _auth.logout(); // token vencido
+      _error = e.message;
+      if (e.statusCode == 401) await _auth.logout();
+      return false;
+    } on Object {
+      _error = 'Ocurrió un error inesperado';
       return false;
     } finally {
-      guardando = false;
+      _isSaving = false;
       notifyListeners();
     }
   }
 
-  void limpiarError() {
-    if (error == null) return;
-    error = null;
+  void clearError() {
+    if (_error == null) return;
+    _error = null;
     notifyListeners();
   }
 
-  Future<void> cerrarSesion() => _auth.logout();
+  Future<void> logout() => _auth.logout();
 }

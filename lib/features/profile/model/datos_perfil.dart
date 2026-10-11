@@ -1,10 +1,10 @@
-/// Datos editables del perfil
 class DatosPerfil {
   const DatosPerfil({
     required this.nombres,
     required this.apellidos,
     required this.correo,
     required this.telefono,
+    this.contrasenaActual,
     this.contrasenaNueva,
   });
 
@@ -12,6 +12,7 @@ class DatosPerfil {
   final String apellidos;
   final String correo;
   final String telefono;
+  final String? contrasenaActual;
   final String? contrasenaNueva;
 
   Map<String, dynamic> toJson() => {
@@ -19,6 +20,7 @@ class DatosPerfil {
     'apellidos': apellidos,
     'correo': correo,
     'telefono': telefono,
+    'contrasenaActual': contrasenaActual,
     'contrasenaNueva': contrasenaNueva,
   };
 }

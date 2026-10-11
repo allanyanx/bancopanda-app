@@ -9,7 +9,7 @@ import '../../model/datos_perfil.dart';
 import '../../viewmodel/profile_view_model.dart';
 
 Future<void> mostrarEditarPerfil(BuildContext context, Usuario usuario) {
-  context.read<ProfileViewModel>().limpiarError();
+  context.read<ProfileViewModel>().clearError();
   return showDialog<void>(
     context: context,
     barrierDismissible: false,
@@ -34,12 +34,24 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
   late final _telefono = TextEditingController(
     text: widget.usuario.telefono ?? '',
   );
-  final _contrasena = TextEditingController();
+  final _contrasenaActual = TextEditingController();
+  final _contrasenaNueva = TextEditingController();
+  final _confirmacion = TextEditingController();
+
+  bool get _cambiaContrasena => _contrasenaNueva.text.isNotEmpty;
 
   @override
   void dispose() {
-    for (final c in [_nombres, _apellidos, _correo, _telefono, _contrasena]) {
-      c.dispose();
+    for (final controller in [
+      _nombres,
+      _apellidos,
+      _correo,
+      _telefono,
+      _contrasenaActual,
+      _contrasenaNueva,
+      _confirmacion,
+    ]) {
+      controller.dispose();
     }
     super.dispose();
   }
@@ -47,28 +59,36 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
   Future<void> _guardar() async {
     if (!_formKey.currentState!.validate()) return;
     final vm = context.read<ProfileViewModel>();
-    final nueva = _contrasena.text;
 
-    final ok = await vm.guardar(
+    final ok = await vm.save(
       DatosPerfil(
         nombres: _nombres.text.trim(),
         apellidos: _apellidos.text.trim(),
         correo: _correo.text.trim(),
         telefono: _telefono.text.trim(),
-        contrasenaNueva: nueva.isEmpty ? null : nueva,
+        contrasenaActual: _cambiaContrasena ? _contrasenaActual.text : null,
+        contrasenaNueva: _cambiaContrasena ? _contrasenaNueva.text : null,
       ),
     );
 
-    if (!mounted || !ok) return;
+    if (!mounted) return;
+
+    final sesionCerrada = vm.usuario == null;
+    if (!ok && !sesionCerrada) return;
+
+    final messenger = ScaffoldMessenger.of(context);
     Navigator.of(context).pop();
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        const SnackBar(
-          content: Text('Perfil actualizado'),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+
+    if (ok) {
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          const SnackBar(
+            content: Text('Perfil actualizado'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+    }
   }
 
   @override
@@ -120,12 +140,32 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
               const SizedBox(height: 12),
               _Campo(
                 label: 'Nueva contraseña (opcional)',
-                controller: _contrasena,
+                controller: _contrasenaNueva,
                 isPassword: true,
-                // Vacía = no se cambia.
-                validator: (v) =>
-                    (v == null || v.isEmpty) ? null : Validators.contrasena(v),
+                onChanged: (_) => setState(() {}),
+                validator: (value) => (value == null || value.isEmpty)
+                    ? null
+                    : Validators.contrasena(value),
               ),
+              if (_cambiaContrasena) ...[
+                const SizedBox(height: 12),
+                _Campo(
+                  label: 'Confirmar nueva contraseña',
+                  controller: _confirmacion,
+                  isPassword: true,
+                  validator: (value) => Validators.confirmarContrasena(
+                    value,
+                    _contrasenaNueva.text,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _Campo(
+                  label: 'Contraseña actual',
+                  controller: _contrasenaActual,
+                  isPassword: true,
+                  validator: Validators.contrasenaLogin,
+                ),
+              ],
               if (vm.error != null) ...[
                 const SizedBox(height: 12),
                 Text(
@@ -138,7 +178,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                    onPressed: vm.guardando
+                    onPressed: vm.isSaving
                         ? null
                         : () => Navigator.of(context).pop(),
                     style: TextButton.styleFrom(
@@ -148,14 +188,14 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                   ),
                   const SizedBox(width: 8),
                   FilledButton(
-                    onPressed: vm.guardando ? null : _guardar,
+                    onPressed: vm.isSaving ? null : _guardar,
                     style: FilledButton.styleFrom(
                       minimumSize: const Size(120, 48),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(24),
                       ),
                     ),
-                    child: vm.guardando
+                    child: vm.isSaving
                         ? const SizedBox(
                             width: 22,
                             height: 22,
@@ -173,7 +213,6 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
   }
 }
 
-/// Campo con etiqueta flotante, como en el diseño de edición.
 class _Campo extends StatelessWidget {
   const _Campo({
     required this.label,
@@ -181,6 +220,7 @@ class _Campo extends StatelessWidget {
     this.validator,
     this.keyboardType,
     this.formatters,
+    this.onChanged,
     this.isPassword = false,
   });
 
@@ -189,6 +229,7 @@ class _Campo extends StatelessWidget {
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? formatters;
+  final ValueChanged<String>? onChanged;
   final bool isPassword;
 
   @override
@@ -198,6 +239,7 @@ class _Campo extends StatelessWidget {
       validator: validator,
       keyboardType: keyboardType,
       inputFormatters: formatters,
+      onChanged: onChanged,
       obscureText: isPassword,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       style: const TextStyle(color: AppColors.textPrimary),

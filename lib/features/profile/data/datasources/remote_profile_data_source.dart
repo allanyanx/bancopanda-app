@@ -6,13 +6,14 @@ import 'profile_data_source.dart';
 class RemoteProfileDataSource implements ProfileDataSource {
   const RemoteProfileDataSource(this._api);
 
+  static const _path = '/api/usuarios/perfil';
+
   final ApiClient _api;
 
   @override
-  Future<Usuario> obtener() async =>
-      Usuario.fromJson(await _api.get('/api/usuarios/me'));
+  Future<Usuario> fetch() async => Usuario.fromJson(await _api.get(_path));
 
   @override
-  Future<Usuario> actualizar(DatosPerfil datos) async =>
-      Usuario.fromJson(await _api.put('/api/usuarios/me', datos.toJson()));
+  Future<Usuario> update(DatosPerfil datos) async =>
+      Usuario.fromJson(await _api.put(_path, datos.toJson()));
 }

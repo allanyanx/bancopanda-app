@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Controla si la app está en modo claro u oscuro.
 class ThemeViewModel extends ChangeNotifier {
   ThemeMode _mode = ThemeMode.light;
 

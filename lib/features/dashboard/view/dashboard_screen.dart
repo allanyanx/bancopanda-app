@@ -7,8 +7,6 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/theme_view_model.dart';
 import '../../auth/viewmodel/auth_view_model.dart';
 
-/// Pantalla provisional: confirma que la sesión funciona.
-/// Se reemplazará por el dashboard real en la siguiente fase.
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
 

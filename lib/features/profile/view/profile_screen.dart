@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/theme_view_model.dart';
 import '../viewmodel/profile_view_model.dart';
@@ -9,12 +11,20 @@ import 'widgets/preference_tile.dart';
 import 'widgets/profile_header.dart';
 import 'widgets/profile_info_tile.dart';
 
-import 'package:go_router/go_router.dart';
-
-import '../../../core/router/app_router.dart';
-
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+    final vm = context.read<ProfileViewModel>();
+    WidgetsBinding.instance.addPostFrameCallback((_) => vm.refresh());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,10 +59,9 @@ class ProfileScreen extends StatelessWidget {
                         : context.go(AppRoutes.home),
                   ),
                   TextButton(
-                    onPressed: vm.cerrarSesion,
+                    onPressed: vm.logout,
                     style: TextButton.styleFrom(
                       foregroundColor: AppColors.error,
-                      textStyle: theme.textTheme.bodyLarge,
                     ),
                     child: const Text('Cerrar Sesión'),
                   ),
@@ -66,14 +75,13 @@ class ProfileScreen extends StatelessWidget {
                   Text('Datos Personales', style: tituloSeccion),
                   TextButton(
                     onPressed: () => mostrarEditarPerfil(context, usuario),
-                    style: TextButton.styleFrom(
-                      foregroundColor: AppColors.error,
-                    ),
                     child: const Text('Editar'),
                   ),
                 ],
               ),
               ProfileInfoTile(label: 'Nombres', value: usuario.nombres),
+              const SizedBox(height: 10),
+              ProfileInfoTile(label: 'Apellidos', value: usuario.apellidos),
               const SizedBox(height: 10),
               ProfileInfoTile(label: 'Correo', value: usuario.correo),
               const SizedBox(height: 10),
@@ -88,8 +96,8 @@ class ProfileScreen extends StatelessWidget {
               const SizedBox(height: 10),
               PreferenceTile(
                 label: 'Notificaciones',
-                value: vm.notificaciones,
-                onChanged: vm.setNotificaciones,
+                value: vm.notificationsEnabled,
+                onChanged: vm.setNotifications,
               ),
               const SizedBox(height: 10),
               PreferenceTile(

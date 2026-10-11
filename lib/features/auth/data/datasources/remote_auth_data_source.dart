@@ -3,7 +3,6 @@ import '../../model/datos_registro.dart';
 import '../../model/sesion.dart';
 import 'auth_data_source.dart';
 
-/// Implementación que habla con la API .NET.
 class RemoteAuthDataSource implements AuthDataSource {
   const RemoteAuthDataSource(this._api);
 

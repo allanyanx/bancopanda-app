@@ -12,7 +12,6 @@ import '../network/api_client.dart';
 import '../storage/key_value_storage.dart';
 import '../theme/theme_view_model.dart';
 
-/// Inyección de dependencias, lugar concreto para todas las implementaciones
 Future<List<SingleChildWidget>> createProviders() async {
   const storage = SecureKeyValueStorage();
 
@@ -31,11 +30,13 @@ Future<List<SingleChildWidget>> createProviders() async {
   await authViewModel.restoreSession();
 
   final profileViewModel = ProfileViewModel(
-    repository: ProfileRepository(RemoteProfileDataSource(apiClient)),
+    repository: ProfileRepository(
+      dataSource: RemoteProfileDataSource(apiClient),
+      storage: storage,
+    ),
     auth: authViewModel,
-    storage: storage,
   );
-  await profileViewModel.cargarPreferencias();
+  await profileViewModel.loadPreferences();
 
   return [
     ChangeNotifierProvider.value(value: settings),
