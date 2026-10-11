@@ -13,9 +13,7 @@ abstract final class AppRoutes {
   static const home = '/inicio';
 }
 
-/// Rutas de la app, protegidas por sesión.
-/// `refreshListenable` hace que el router vuelva a evaluar `redirect` cada vez
-/// que el AuthViewModel notifica un cambio (login, registro o cierre de sesión).
+/// Rutas de la app, protegidas por sesión
 GoRouter createAppRouter(AuthViewModel auth) {
   return GoRouter(
     initialLocation: AppRoutes.login,
@@ -25,13 +23,12 @@ GoRouter createAppRouter(AuthViewModel auth) {
 
       if (!auth.isLoggedIn && !enZonaPublica) return AppRoutes.login;
       if (auth.isLoggedIn && enZonaPublica) return AppRoutes.home;
-      return null; // Sin cambios
+      return null; 
     },
     routes: [
       GoRoute(
         path: AppRoutes.login,
         builder: (context, state) => const LoginScreen(),
-        // Rutas hijas: se apilan sobre el login, así el botón "atrás" vuelve a él.
         routes: [
           GoRoute(
             path: 'registro',

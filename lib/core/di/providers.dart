@@ -9,9 +9,7 @@ import '../network/api_client.dart';
 import '../storage/key_value_storage.dart';
 import '../theme/theme_view_model.dart';
 
-/// Inyección de dependencias: aquí se arma la cadena completa
-/// Storage → Settings → ApiClient → DataSource → Repository → ViewModel.
-/// Es el único lugar que conoce las implementaciones concretas.
+/// Inyección de dependencias, lugar concreto para todas las implementaciones
 Future<List<SingleChildWidget>> createProviders() async {
   const storage = SecureKeyValueStorage();
 

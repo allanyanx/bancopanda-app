@@ -27,7 +27,7 @@ class AuthErrorMessage extends StatelessWidget {
   }
 }
 
-/// Enlace de pie de pantalla: "¿Eres nuevo? Regístrate aquí".
+/// Enlace de pie de pantalla
 class AuthFooterLink extends StatelessWidget {
   const AuthFooterLink({
     super.key,

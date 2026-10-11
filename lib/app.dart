@@ -33,7 +33,6 @@ class _BancoPandaAppState extends State<BancoPandaApp> {
 
   @override
   Widget build(BuildContext context) {
-    // watch: este widget se redibuja cuando cambia el ThemeViewModel
     final themeMode = context.watch<ThemeViewModel>().mode;
 
     return MaterialApp.router(

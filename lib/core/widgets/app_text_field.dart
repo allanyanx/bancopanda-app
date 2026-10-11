@@ -3,8 +3,6 @@ import 'package:flutter/services.dart';
 
 import '../theme/app_colors.dart';
 
-/// Campo de texto de BancoPanda. Con `isPassword: true` oculta el texto
-/// y muestra el ícono del ojo para verlo.
 class AppTextField extends StatefulWidget {
   const AppTextField({
     super.key,
@@ -36,7 +34,6 @@ class AppTextField extends StatefulWidget {
 }
 
 class _AppTextFieldState extends State<AppTextField> {
-  // Estado efímero de la vista: no le interesa a ningún ViewModel.
   bool _oculto = true;
 
   @override
@@ -53,7 +50,6 @@ class _AppTextFieldState extends State<AppTextField> {
       autocorrect: !widget.isPassword,
       enableSuggestions: !widget.isPassword,
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      // El campo es claro en ambos modos, así que el texto siempre es oscuro.
       style: const TextStyle(color: AppColors.textPrimary),
       decoration: InputDecoration(
         hintText: widget.hint,

@@ -64,7 +64,7 @@ abstract final class Validators {
     return null;
   }
 
-  /// Dirección del backend: http(s)://host[:puerto]
+  /// Dirección del backend
   static String? urlServidor(String? value) {
     final texto = value?.trim() ?? '';
     if (texto.isEmpty) return 'Ingresa la dirección del servidor';

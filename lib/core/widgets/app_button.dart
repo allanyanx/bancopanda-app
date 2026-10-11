@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Botón principal. Con `isLoading: true` muestra un indicador de carga
-/// y se deshabilita para evitar envíos duplicados.
 class AppButton extends StatelessWidget {
   const AppButton({
     super.key,

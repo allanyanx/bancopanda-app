@@ -6,7 +6,7 @@ void mostrarProximamente(BuildContext context) {
     ..hideCurrentSnackBar()
     ..showSnackBar(
       const SnackBar(
-        content: Text('Próximamente 🐼'),
+        content: Text('Próximamente'),
         behavior: SnackBarBehavior.floating,
         duration: Duration(seconds: 2),
       ),

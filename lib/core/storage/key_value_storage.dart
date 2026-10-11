@@ -1,7 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-/// Almacenamiento local clave-valor. Al depender de esta interfaz (y no del
-/// paquete), los tests pueden usar una versión en memoria.
+/// Almacenamiento local clave-valor. Los tests pueden usar una versión en memoria.
 abstract interface class KeyValueStorage {
   Future<String?> read(String key);
   Future<void> write(String key, String value);

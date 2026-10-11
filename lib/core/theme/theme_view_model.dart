@@ -9,6 +9,6 @@ class ThemeViewModel extends ChangeNotifier {
 
   void setDarkMode(bool enabled) {
     _mode = enabled ? ThemeMode.dark : ThemeMode.light;
-    notifyListeners(); // Avisa a las vistas que deben redibujarse
+    notifyListeners(); 
   }
 }

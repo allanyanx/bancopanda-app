@@ -5,7 +5,6 @@ import 'app.dart';
 import 'core/di/providers.dart';
 
 Future<void> main() async {
-  // Necesario para usar plugins (almacenamiento seguro) antes de runApp.
   WidgetsFlutterBinding.ensureInitialized();
 
   final providers = await createProviders();

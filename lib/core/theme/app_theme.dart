@@ -30,7 +30,6 @@ abstract final class AppTheme {
     return base.copyWith(
       textTheme: GoogleFonts.poppinsTextTheme(base.textTheme),
 
-      // Campos de texto redondeados. En el diseño son claros en ambos modos.
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: isDark ? AppColors.surfaceMint : AppColors.fieldFill,
@@ -45,7 +44,6 @@ abstract final class AppTheme {
         focusedErrorBorder: _fieldBorder(AppColors.error, width: 1.5),
       ),
 
-      // Botón principal: "Iniciar Sesión", "Crear Cuenta".
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           backgroundColor: AppColors.primary,
@@ -58,7 +56,6 @@ abstract final class AppTheme {
         ),
       ),
 
-      // Enlaces: "¿Olvidaste tu contraseña?", "Regístrate aquí".
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: isDark ? AppColors.primary : AppColors.primaryDark,

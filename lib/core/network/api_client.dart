@@ -7,8 +7,7 @@ import '../config/app_settings.dart';
 import '../errors/app_exception.dart';
 
 /// Único punto de salida hacia el backend. Arma la URL con la dirección
-/// configurada, envía JSON, agrega el token y convierte cualquier fallo
-/// en una [AppException] con un mensaje listo para mostrar.
+/// configurada, envía JSON, agrega el token y convierte cualquier fallo.
 class ApiClient {
   ApiClient({required this._settings, http.Client? httpClient})
       : _http = httpClient ?? http.Client();
@@ -18,7 +17,7 @@ class ApiClient {
   final AppSettings _settings;
   final http.Client _http;
 
-  /// Token JWT de la sesión actual. Lo asigna el AuthRepository.
+  /// Token JWT
   String? token;
 
   Future<Map<String, dynamic>> get(String path) {
@@ -67,7 +66,6 @@ class ApiClient {
   Map<String, dynamic> _decode(http.Response response) {
     if (response.bodyBytes.isEmpty) return {};
     try {
-      // utf8 explícito: los mensajes del backend tienen tildes.
       final json = jsonDecode(utf8.decode(response.bodyBytes));
       return json is Map<String, dynamic> ? json : {};
     } on FormatException {
@@ -75,8 +73,7 @@ class ApiClient {
     }
   }
 
-  /// El backend responde los errores en formato ProblemDetails:
-  /// `detail` para reglas de negocio y `errors` para validaciones de campos.
+  /// El backend responde los errores en formato ProblemDetails
   String _errorMessage(Map<String, dynamic> body, int statusCode) {
     final errors = body['errors'];
     if (errors is Map && errors.isNotEmpty) {

@@ -2,9 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import '../storage/key_value_storage.dart';
 
-/// Ajustes de la app. Flutter no tiene variables de entorno en tiempo de
-/// ejecución, así que la dirección del backend se configura aquí y se puede
-/// cambiar desde la pantalla "Configurar servidor" sin recompilar.
+/// Ajustes de la app
 class AppSettings extends ChangeNotifier {
   AppSettings(this._storage);
 
@@ -34,7 +32,6 @@ class AppSettings extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Quita espacios y la barra final: "http://host:5258/" → "http://host:5258"
   static String _normalizar(String url) {
     final limpia = url.trim();
     return limpia.endsWith('/') ? limpia.substring(0, limpia.length - 1) : limpia;
