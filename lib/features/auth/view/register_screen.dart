@@ -72,6 +72,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             correo: _correo.text.trim(),
             telefono: _telefono.text.trim(),
             contrasena: _contrasena.text,
+            aceptaTerminos: _aceptaTerminos,
           ),
         );
   }

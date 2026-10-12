@@ -120,6 +120,7 @@ void main() {
         correo: 'prueba@bancopanda.test',
         telefono: '0987654321',
         contrasena: 'Panda2026',
+        aceptaTerminos: true,
       ),
     );
 
