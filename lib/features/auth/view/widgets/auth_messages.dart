@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Mensaje de error que devuelve el backend (credenciales, correo repetido...).
 class AuthErrorMessage extends StatelessWidget {
   const AuthErrorMessage(this.message, {super.key});
 
@@ -27,7 +26,6 @@ class AuthErrorMessage extends StatelessWidget {
   }
 }
 
-/// Enlace de pie de pantalla
 class AuthFooterLink extends StatelessWidget {
   const AuthFooterLink({
     super.key,

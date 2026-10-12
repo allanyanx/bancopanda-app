@@ -15,8 +15,6 @@ class BancoPandaApp extends StatefulWidget {
 }
 
 class _BancoPandaAppState extends State<BancoPandaApp> {
-  // El router se crea una sola vez: si se recreara en cada build,
-  // se perdería la pantalla actual al cambiar el tema.
   late final GoRouter _router;
 
   @override

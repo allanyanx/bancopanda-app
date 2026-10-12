@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
 
-/// Base común de login y registro: fondo verde claro (u oscuro), contenido
-/// centrado con scroll y un botón opcional en la esquina superior derecha.
 class AuthScaffold extends StatelessWidget {
   const AuthScaffold({super.key, required this.child, this.action});
 

@@ -5,6 +5,7 @@ import '../../features/auth/view/login_screen.dart';
 import '../../features/auth/view/register_screen.dart';
 import '../../features/auth/viewmodel/auth_view_model.dart';
 import '../../features/dashboard/view/dashboard_screen.dart';
+import '../../features/profile/view/profile_screen.dart';
 import '../../features/settings/view/server_settings_screen.dart';
 import '../../features/shell/view/cuenta_provisional_screen.dart';
 import '../../features/shell/view/en_construccion_screen.dart';
@@ -18,9 +19,9 @@ abstract final class AppRoutes {
   static const cards = '/tarjetas';
   static const movements = '/movimientos';
   static const account = '/cuenta';
+  static const profile = '/perfil';
 }
 
-/// Rutas de la app, protegidas por sesión
 GoRouter createAppRouter(AuthViewModel auth) {
   return GoRouter(
     initialLocation: AppRoutes.login,
@@ -92,6 +93,10 @@ GoRouter createAppRouter(AuthViewModel auth) {
             ],
           ),
         ],
+      ),
+      GoRoute(
+        path: AppRoutes.profile,
+        builder: (context, state) => const ProfileScreen(),
       ),
     ],
   );

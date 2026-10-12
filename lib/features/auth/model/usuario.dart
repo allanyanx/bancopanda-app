@@ -1,5 +1,3 @@
-/// Usuario de BancoPanda. Los campos se llaman igual que en el backend
-/// y en la base de datos (usuarioId, nombres, apellidos...).
 class Usuario {
   const Usuario({
     required this.usuarioId,
@@ -17,7 +15,6 @@ class Usuario {
   final String correo;
   final String? telefono;
 
-  // Solo para mostrar en pantalla: "Hola, Andrea", "Andrea Barroso".
   String get primerNombre => nombres.split(' ').first;
   String get primerApellido => apellidos.split(' ').first;
   String get nombreCompleto => '$nombres $apellidos';

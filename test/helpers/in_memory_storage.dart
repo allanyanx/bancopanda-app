@@ -1,6 +1,5 @@
 import 'package:bancopanda_app/core/storage/key_value_storage.dart';
 
-/// Almacenamiento en memoria para los tests (no necesita un dispositivo).
 class InMemoryStorage implements KeyValueStorage {
   final Map<String, String> data = {};
 

@@ -62,8 +62,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() => _faltanTerminos = !_aceptaTerminos);
     if (!formularioValido || !_aceptaTerminos) return;
 
-    // Al registrarse el backend devuelve la sesión iniciada y el router
-    // redirige al inicio automáticamente.
     await context.read<AuthViewModel>().register(
           DatosRegistro(
             cedula: _cedula.text.trim(),

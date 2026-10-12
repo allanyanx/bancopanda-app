@@ -1,4 +1,3 @@
-/// Datos del formulario de registro, tal como los espera el backend.
 class DatosRegistro {
   const DatosRegistro({
     required this.cedula,

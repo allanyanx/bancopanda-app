@@ -2,11 +2,9 @@ import 'package:flutter/foundation.dart';
 
 import '../storage/key_value_storage.dart';
 
-/// Ajustes de la app
 class AppSettings extends ChangeNotifier {
   AppSettings(this._storage);
 
-  /// Desde el emulador de Android, 10.0.2.2 es el localhost de la PC.
   static const defaultServerUrl = 'http://10.0.2.2:5258';
   static const _serverUrlKey = 'url_servidor';
 
