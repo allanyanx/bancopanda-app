@@ -24,9 +24,11 @@ class ProfileViewModel extends ChangeNotifier {
 
   bool guardando = false;
   String? error;
+  bool cargando = false;
+  String? errorCarga;
   bool notificaciones = true;
 
-  /// El usuario vive en la sesión; el perfil solo lo lee.
+  //Se lee el usuario
   Usuario? get usuario => _auth.usuario;
 
   Future<void> cargarPreferencias() async {
@@ -50,7 +52,7 @@ class ProfileViewModel extends ChangeNotifier {
       return true;
     } on AppException catch (e) {
       error = e.message;
-      if (e.statusCode == 401) await _auth.logout(); // token vencido
+      if (e.statusCode == 401) await _auth.logout();
       return false;
     } finally {
       guardando = false;
@@ -62,6 +64,22 @@ class ProfileViewModel extends ChangeNotifier {
     if (error == null) return;
     error = null;
     notifyListeners();
+  }
+
+  Future<void> cargar() async {
+    cargando = true;
+    errorCarga = null;
+    notifyListeners();
+    try {
+      final actualizado = await _repository.obtener();
+      await _auth.actualizarUsuario(actualizado);
+    } on AppException catch (e) {
+      errorCarga = e.message;
+      if (e.statusCode == 401) await _auth.logout();
+    } finally {
+      cargando = false;
+      notifyListeners();
+    }
   }
 
   Future<void> cerrarSesion() => _auth.logout();
