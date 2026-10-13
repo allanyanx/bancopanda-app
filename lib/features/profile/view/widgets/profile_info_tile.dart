@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
 
-/// Tarjeta menta con etiqueta y valor
 class ProfileInfoTile extends StatelessWidget {
   const ProfileInfoTile({super.key, required this.label, required this.value});
 

@@ -12,7 +12,6 @@ import '../network/api_client.dart';
 import '../storage/key_value_storage.dart';
 import '../theme/theme_view_model.dart';
 
-/// Inyección de dependencias, lugar concreto para todas las implementaciones
 Future<List<SingleChildWidget>> createProviders() async {
   const storage = SecureKeyValueStorage();
 

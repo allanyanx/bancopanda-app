@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
 
-/// Logo y nombre de BancoPanda.
-/// - Vertical (login): logo grande, nombre y lema debajo.
-/// - Horizontal (registro): logo a la izquierda y nombre en dos líneas.
 class AuthHeader extends StatelessWidget {
   const AuthHeader({super.key}) : _horizontal = false;
 

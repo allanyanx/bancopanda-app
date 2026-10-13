@@ -1,5 +1,3 @@
-/// Validaciones de formularios. Cada método devuelve `null` si el valor
-/// es válido, o el mensaje de error que se muestra bajo el campo.
 abstract final class Validators {
   static final _correoRegex = RegExp(r'^[\w.+-]+@[\w-]+(\.[\w-]+)+$');
   static final _nombreRegex = RegExp(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]{2,60}$');
@@ -64,7 +62,6 @@ abstract final class Validators {
     return null;
   }
 
-  /// Dirección del backend
   static String? urlServidor(String? value) {
     final texto = value?.trim() ?? '';
     if (texto.isEmpty) return 'Ingresa la dirección del servidor';

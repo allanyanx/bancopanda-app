@@ -35,8 +35,6 @@ class _LoginScreenState extends State<LoginScreen> {
     FocusScope.of(context).unfocus();
     if (!_formKey.currentState!.validate()) return;
 
-    // Si el login es correcto no hay que navegar a mano: el router observa
-    // al AuthViewModel y redirige al inicio cuando hay sesión.
     await context.read<AuthViewModel>().login(
           identificador: _identificador.text.trim(),
           contrasena: _contrasena.text,

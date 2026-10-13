@@ -29,8 +29,6 @@ class ProfileHeader extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              // backgroundImage:
-              //const AssetImage('assets/images/avatar.png')
             ),
             Positioned(
               right: 4,

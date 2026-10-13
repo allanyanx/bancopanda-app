@@ -35,10 +35,20 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
     text: widget.usuario.telefono ?? '',
   );
   final _contrasena = TextEditingController();
+  final _confirmacion = TextEditingController();
+  final _contrasenaActual = TextEditingController();
 
   @override
   void dispose() {
-    for (final c in [_nombres, _apellidos, _correo, _telefono, _contrasena]) {
+    for (final c in [
+      _nombres,
+      _apellidos,
+      _correo,
+      _telefono,
+      _contrasena,
+      _confirmacion,
+      _contrasenaActual,
+    ]) {
       c.dispose();
     }
     super.dispose();
@@ -55,13 +65,21 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
         apellidos: _apellidos.text.trim(),
         correo: _correo.text.trim(),
         telefono: _telefono.text.trim(),
+        contrasenaActual: nueva.isEmpty ? null : _contrasenaActual.text,
         contrasenaNueva: nueva.isEmpty ? null : nueva,
       ),
     );
 
-    if (!mounted || !ok) return;
+    if (!mounted) return;
+
+    final sesionCerrada = vm.usuario == null;
+    if (!ok && !sesionCerrada) return;
+
+    final messenger = ScaffoldMessenger.of(context);
     Navigator.of(context).pop();
-    ScaffoldMessenger.of(context)
+    if (!ok) return;
+
+    messenger
       ..hideCurrentSnackBar()
       ..showSnackBar(
         const SnackBar(
@@ -122,9 +140,26 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                 label: 'Nueva contraseña (opcional)',
                 controller: _contrasena,
                 isPassword: true,
-                // Vacía = no se cambia.
                 validator: (v) =>
                     (v == null || v.isEmpty) ? null : Validators.contrasena(v),
+              ),
+              const SizedBox(height: 12),
+              _Campo(
+                label: 'Confirmar nueva contraseña',
+                controller: _confirmacion,
+                isPassword: true,
+                validator: (v) => _contrasena.text.isEmpty
+                    ? null
+                    : Validators.confirmarContrasena(v, _contrasena.text),
+              ),
+              const SizedBox(height: 12),
+              _Campo(
+                label: 'Contraseña actual',
+                controller: _contrasenaActual,
+                isPassword: true,
+                validator: (v) => _contrasena.text.isEmpty
+                    ? null
+                    : Validators.contrasenaLogin(v),
               ),
               if (vm.error != null) ...[
                 const SizedBox(height: 12),
@@ -173,7 +208,6 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
   }
 }
 
-/// Campo con etiqueta flotante, como en el diseño de edición.
 class _Campo extends StatelessWidget {
   const _Campo({
     required this.label,

@@ -1,4 +1,3 @@
-/// Datos del formulario de registro, tal como los espera el backend.
 class DatosRegistro {
   const DatosRegistro({
     required this.cedula,
@@ -7,6 +6,7 @@ class DatosRegistro {
     required this.correo,
     required this.telefono,
     required this.contrasena,
+    required this.aceptaTerminos,
   });
 
   final String cedula;
@@ -15,6 +15,7 @@ class DatosRegistro {
   final String correo;
   final String telefono;
   final String contrasena;
+  final bool aceptaTerminos;
 
   Map<String, dynamic> toJson() => {
         'cedula': cedula,
@@ -23,5 +24,6 @@ class DatosRegistro {
         'correo': correo,
         'telefono': telefono,
         'contrasena': contrasena,
+        'aceptaTerminos': aceptaTerminos,
       };
 }

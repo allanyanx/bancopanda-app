@@ -6,9 +6,6 @@ import '../model/datos_registro.dart';
 import '../model/sesion.dart';
 import '../model/usuario.dart';
 
-/// Estado de autenticación que observan las pantallas y el router.
-/// No contiene reglas de negocio: solo pide la acción al repositorio y
-/// expone el resultado (cargando, error o sesión iniciada).
 class AuthViewModel extends ChangeNotifier {
   AuthViewModel(this._repository);
 
@@ -23,7 +20,6 @@ class AuthViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
 
-  /// Se llama una vez al abrir la app.
   Future<void> restoreSession() async {
     _sesion = await _repository.restoreSession();
     notifyListeners();
@@ -58,7 +54,6 @@ class AuthViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Patrón común de login y registro: cargando → acción → sesión o error.
   Future<bool> _run(Future<Sesion> Function() action) async {
     if (_isLoading) return false;
 

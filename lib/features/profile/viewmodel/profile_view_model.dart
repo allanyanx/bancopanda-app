@@ -28,7 +28,6 @@ class ProfileViewModel extends ChangeNotifier {
   String? errorCarga;
   bool notificaciones = true;
 
-  //Se lee el usuario
   Usuario? get usuario => _auth.usuario;
 
   Future<void> cargarPreferencias() async {

@@ -7,8 +7,6 @@ import '../../model/sesion.dart';
 import '../../model/usuario.dart';
 import '../datasources/auth_data_source.dart';
 
-/// Administra la sesión: la obtiene del datasource, la guarda cifrada en el
-/// dispositivo y entrega el token al ApiClient para las siguientes peticiones.
 class AuthRepository {
   AuthRepository({
     required this._dataSource,
@@ -40,8 +38,6 @@ class AuthRepository {
     return sesion;
   }
 
-  /// Recupera la sesión guardada al abrir la app. Devuelve null si no hay,
-  /// si ya expiró o si los datos guardados están dañados.
   Future<Sesion?> restoreSession() async {
     final guardada = await _storage.read(_sessionKey);
     if (guardada == null) return null;

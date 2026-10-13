@@ -126,7 +126,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
               Text('Seguridad', style: tituloSeccion),
               const SizedBox(height: 10),
-              // Nunca se muestra la contraseña real (el backend solo guarda el hash).
               const ProfileInfoTile(label: 'Contraseña', value: '••••••••••'),
               const SizedBox(height: 24),
 
