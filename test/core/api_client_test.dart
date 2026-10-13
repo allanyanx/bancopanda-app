@@ -75,6 +75,48 @@ void main() {
     );
   });
 
+  test('getList devuelve la lista que envía el servidor', () async {
+    late http.Request enviada;
+    final api = clienteQueResponde((request) {
+      enviada = request;
+      return json([
+        {'id': 1},
+        {'id': 2},
+      ], 200);
+    });
+
+    final respuesta = await api.getList('/api/movimientos?limite=5');
+
+    expect(respuesta, [
+      {'id': 1},
+      {'id': 2},
+    ]);
+    expect(
+      enviada.url.toString(),
+      'http://10.0.2.2:5258/api/movimientos?limite=5',
+    );
+  });
+
+  test('getList avisa si el servidor no envía una lista', () {
+    final api = clienteQueResponde((_) => json({'ok': true}, 200));
+
+    expect(
+      api.getList('/api/movimientos'),
+      errorConMensaje('El servidor envió una respuesta inesperada'),
+    );
+  });
+
+  test('getList muestra el "detail" cuando el servidor responde con error', () {
+    final api = clienteQueResponde(
+      (_) => json({'detail': 'Tarjeta no encontrada'}, 404),
+    );
+
+    expect(
+      api.getList('/api/tarjetas/x/movimientos'),
+      errorConMensaje('Tarjeta no encontrada', status: 404),
+    );
+  });
+
   test('avisa cuando no hay conexión con el servidor', () {
     final api = ApiClient(
       settings: AppSettings(InMemoryStorage()),

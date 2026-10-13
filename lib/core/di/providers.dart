@@ -4,6 +4,8 @@ import 'package:provider/single_child_widget.dart';
 import '../../features/auth/data/datasources/remote_auth_data_source.dart';
 import '../../features/auth/data/repositories/auth_repository.dart';
 import '../../features/auth/viewmodel/auth_view_model.dart';
+import '../../features/dashboard/data/datasources/remote_dashboard_data_source.dart';
+import '../../features/dashboard/data/repositories/dashboard_repository.dart';
 import '../../features/profile/data/datasources/remote_profile_data_source.dart';
 import '../../features/profile/data/repositories/profile_repository.dart';
 import '../../features/profile/viewmodel/profile_view_model.dart';
@@ -36,8 +38,13 @@ Future<List<SingleChildWidget>> createProviders() async {
   );
   await profileViewModel.cargarPreferencias();
 
+  final dashboardRepository = DashboardRepository(
+    RemoteDashboardDataSource(apiClient),
+  );
+
   return [
     ChangeNotifierProvider.value(value: settings),
+    Provider.value(value: dashboardRepository),
     ChangeNotifierProvider.value(value: authViewModel),
     ChangeNotifierProvider.value(value: profileViewModel),
     ChangeNotifierProvider(create: (_) => ThemeViewModel()),

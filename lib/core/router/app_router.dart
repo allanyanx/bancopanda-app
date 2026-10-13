@@ -3,7 +3,9 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/view/login_screen.dart';
 import '../../features/auth/view/register_screen.dart';
 import '../../features/auth/viewmodel/auth_view_model.dart';
+import '../../features/dashboard/model/tarjeta.dart';
 import '../../features/dashboard/view/dashboard_screen.dart';
+import '../../features/dashboard/view/movements_screen.dart';
 import '../../features/settings/view/server_settings_screen.dart';
 import '../../features/profile/view/profile_screen.dart';
 
@@ -13,6 +15,7 @@ abstract final class AppRoutes {
   static const serverSettings = '/login/servidor';
   static const home = '/inicio';
   static const profile = '/perfil';
+  static const movements = '/movimientos';
 }
 
 GoRouter createAppRouter(AuthViewModel auth) {
@@ -48,6 +51,11 @@ GoRouter createAppRouter(AuthViewModel auth) {
       GoRoute(
         path: AppRoutes.profile,
         builder: (context, state) => const ProfileScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.movements,
+        builder: (context, state) =>
+            MovementsScreen(tarjeta: state.extra as Tarjeta?),
       ),
     ],
   );

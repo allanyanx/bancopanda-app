@@ -17,13 +17,25 @@ class ApiClient {
 
   String? token;
 
-  Future<Map<String, dynamic>> get(String path) {
-    return _send(() => _http.get(_uri(path), headers: _headers));
+  Future<Map<String, dynamic>> get(String path) async {
+    return _asMap(await _send(() => _http.get(_uri(path), headers: _headers)));
   }
 
-  Future<Map<String, dynamic>> post(String path, Map<String, dynamic> body) {
-    return _send(
-      () => _http.post(_uri(path), headers: _headers, body: jsonEncode(body)),
+  Future<List<dynamic>> getList(String path) async {
+    final json = await _send(() => _http.get(_uri(path), headers: _headers));
+    if (json is List<dynamic>) return json;
+
+    throw const AppException('El servidor envió una respuesta inesperada');
+  }
+
+  Future<Map<String, dynamic>> post(
+    String path,
+    Map<String, dynamic> body,
+  ) async {
+    return _asMap(
+      await _send(
+        () => _http.post(_uri(path), headers: _headers, body: jsonEncode(body)),
+      ),
     );
   }
 
@@ -35,9 +47,7 @@ class ApiClient {
     if (token != null) 'Authorization': 'Bearer $token',
   };
 
-  Future<Map<String, dynamic>> _send(
-    Future<http.Response> Function() request,
-  ) async {
+  Future<Object?> _send(Future<http.Response> Function() request) async {
     final http.Response response;
     try {
       response = await request().timeout(_timeout);
@@ -55,26 +65,33 @@ class ApiClient {
     if (response.statusCode >= 200 && response.statusCode < 300) return body;
 
     throw AppException(
-      _errorMessage(body, response.statusCode),
+      _errorMessage(_asMap(body), response.statusCode),
       statusCode: response.statusCode,
     );
   }
 
-  Future<Map<String, dynamic>> put(String path, Map<String, dynamic> body) {
-    return _send(
-      () => _http.put(_uri(path), headers: _headers, body: jsonEncode(body)),
+  Future<Map<String, dynamic>> put(
+    String path,
+    Map<String, dynamic> body,
+  ) async {
+    return _asMap(
+      await _send(
+        () => _http.put(_uri(path), headers: _headers, body: jsonEncode(body)),
+      ),
     );
   }
 
-  Map<String, dynamic> _decode(http.Response response) {
-    if (response.bodyBytes.isEmpty) return {};
+  Object? _decode(http.Response response) {
+    if (response.bodyBytes.isEmpty) return null;
     try {
-      final json = jsonDecode(utf8.decode(response.bodyBytes));
-      return json is Map<String, dynamic> ? json : {};
+      return jsonDecode(utf8.decode(response.bodyBytes));
     } on FormatException {
-      return {};
+      return null;
     }
   }
+
+  Map<String, dynamic> _asMap(Object? json) =>
+      json is Map<String, dynamic> ? json : {};
 
   String _errorMessage(Map<String, dynamic> body, int statusCode) {
     final errors = body['errors'];

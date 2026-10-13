@@ -4,79 +4,165 @@ import 'package:provider/provider.dart';
 
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/theme_view_model.dart';
+import '../../../core/utils/proximamente.dart';
 import '../../auth/viewmodel/auth_view_model.dart';
+import '../data/repositories/dashboard_repository.dart';
+import '../model/resumen_dashboard.dart';
+import '../viewmodel/dashboard_view_model.dart';
+import 'widgets/balance_card.dart';
+import 'widgets/cards_carousel.dart';
+import 'widgets/dashboard_bottom_bar.dart';
+import 'widgets/dashboard_header.dart';
+import 'widgets/load_error.dart';
+import 'widgets/movimiento_tile.dart';
+import 'widgets/quick_actions.dart';
+import 'widgets/section_header.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final auth = context.watch<AuthViewModel>();
-    final theme = context.watch<ThemeViewModel>();
-    final textTheme = Theme.of(context).textTheme;
-    final usuario = auth.usuario;
+    return ChangeNotifierProvider(
+      create: (context) => DashboardViewModel(
+        repository: context.read<DashboardRepository>(),
+        auth: context.read<AuthViewModel>(),
+      )..cargar(),
+      child: const _DashboardView(),
+    );
+  }
+}
+
+class _DashboardView extends StatelessWidget {
+  const _DashboardView();
+
+  static const _margen = 20.0;
+  static const _lateral = EdgeInsets.symmetric(horizontal: _margen);
+
+  @override
+  Widget build(BuildContext context) {
+    final vm = context.watch<DashboardViewModel>();
+    final usuario = context.watch<AuthViewModel>().usuario;
+    final resumen = vm.resumen;
+    final error = vm.error;
 
     return Scaffold(
+      bottomNavigationBar: const DashboardBottomBar(),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(28),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+        bottom: false,
+        child: RefreshIndicator(
+          onRefresh: vm.cargar,
+          child: ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.symmetric(vertical: 16),
             children: [
-              Text.rich(
-                TextSpan(
-                  text: 'Hola, ',
-                  children: [
-                    TextSpan(
-                      text: usuario?.primerNombre ?? '',
-                      style: const TextStyle(color: AppColors.primary),
-                    ),
-                  ],
-                ),
-                textAlign: TextAlign.center,
-                style: textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                usuario?.correo ?? '',
-                textAlign: TextAlign.center,
-                style: textTheme.bodyMedium,
-              ),
-              const SizedBox(height: 24),
-              Text(
-                'Sesión iniciada. El dashboard está en construcción 🐼',
-                textAlign: TextAlign.center,
-                style: textTheme.bodyLarge,
-              ),
-              const SizedBox(height: 24),
-              SwitchListTile(
-                title: const Text('Modo oscuro'),
-                value: theme.isDark,
-                onChanged: theme.setDarkMode,
-              ),
-              const SizedBox(height: 12),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: FilledButton.icon(
-                  onPressed: () => context.push(AppRoutes.profile),
-                  icon: const Icon(Icons.person_outline),
-                  label: const Text('Mi perfil'),
+                padding: _lateral,
+                child: DashboardHeader(nombre: usuario?.primerNombre ?? ''),
+              ),
+              if (error != null)
+                Padding(
+                  padding: _lateral.copyWith(top: 8),
+                  child: LoadError(mensaje: error, onReintentar: vm.cargar),
                 ),
-              ),
-              const SizedBox(height: 12),
-              TextButton(
-                onPressed: auth.logout,
-                style: TextButton.styleFrom(foregroundColor: AppColors.error),
-                child: const Text('Cerrar Sesión'),
-              ),
+              if (resumen != null)
+                _DashboardContent(
+                  resumen: resumen,
+                  titular: usuario == null
+                      ? ''
+                      : '${usuario.primerNombre} ${usuario.primerApellido}',
+                  saldoVisible: vm.saldoVisible,
+                  onAlternarSaldo: vm.alternarSaldo,
+                )
+              else if (vm.cargando)
+                const Padding(
+                  padding: EdgeInsets.only(top: 120),
+                  child: Center(child: CircularProgressIndicator()),
+                ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class _DashboardContent extends StatelessWidget {
+  const _DashboardContent({
+    required this.resumen,
+    required this.titular,
+    required this.saldoVisible,
+    required this.onAlternarSaldo,
+  });
+
+  static const _margen = _DashboardView._margen;
+  static const _lateral = _DashboardView._lateral;
+
+  final ResumenDashboard resumen;
+  final String titular;
+  final bool saldoVisible;
+  final VoidCallback onAlternarSaldo;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const SizedBox(height: 16),
+        Padding(
+          padding: _lateral,
+          child: BalanceCard(
+            saldoTotal: resumen.saldoTotal,
+            moneda: resumen.moneda,
+            cuentas: resumen.cuentas,
+            saldoVisible: saldoVisible,
+            onAlternarSaldo: onAlternarSaldo,
+          ),
+        ),
+        const SizedBox(height: 20),
+        const Padding(padding: _lateral, child: QuickActions()),
+        const SizedBox(height: 20),
+        Padding(
+          padding: _lateral,
+          child: SectionHeader(
+            titulo: 'Mis Tarjetas',
+            onVerMas: () => mostrarProximamente(context),
+          ),
+        ),
+        const SizedBox(height: 8),
+        CardsCarousel(
+          tarjetas: resumen.tarjetas,
+          titular: titular,
+          saldoVisible: saldoVisible,
+          padding: _margen,
+          onTarjeta: (tarjeta) =>
+              context.push(AppRoutes.movements, extra: tarjeta),
+        ),
+        const SizedBox(height: 20),
+        Padding(
+          padding: _lateral,
+          child: SectionHeader(
+            titulo: 'Actividad reciente',
+            onVerMas: () => context.push(AppRoutes.movements),
+          ),
+        ),
+        const SizedBox(height: 4),
+        if (resumen.movimientos.isEmpty)
+          Padding(
+            padding: _lateral.copyWith(top: 12),
+            child: Text(
+              'Aún no tienes movimientos',
+              style: Theme.of(context).textTheme.bodyMedium
+                  ?.copyWith(color: AppColors.textSecondary),
+            ),
+          )
+        else
+          for (final movimiento in resumen.movimientos)
+            Padding(
+              padding: _lateral,
+              child: MovimientoTile(movimiento: movimiento),
+            ),
+      ],
     );
   }
 }
