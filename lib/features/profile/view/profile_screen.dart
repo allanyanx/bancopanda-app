@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/theme_view_model.dart';
 import '../viewmodel/profile_view_model.dart';
@@ -9,12 +11,21 @@ import 'widgets/preference_tile.dart';
 import 'widgets/profile_header.dart';
 import 'widgets/profile_info_tile.dart';
 
-import 'package:go_router/go_router.dart';
-
-import '../../../core/router/app_router.dart';
-
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) context.read<ProfileViewModel>().cargar();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +54,7 @@ class ProfileScreen extends StatelessWidget {
                 children: [
                   IconButton(
                     tooltip: 'Volver',
-                    icon: const Icon(Icons.chevron_left),
+                    icon: const Icon(Icons.arrow_back_ios_new_rounded),
                     onPressed: () => context.canPop()
                         ? context.pop()
                         : context.go(AppRoutes.home),
@@ -58,8 +69,36 @@ class ProfileScreen extends StatelessWidget {
                   ),
                 ],
               ),
+
+              if (vm.cargando) const LinearProgressIndicator(minHeight: 3),
+              if (vm.errorCarga != null)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        size: 20,
+                        color: theme.colorScheme.error,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          vm.errorCarga!,
+                          style: TextStyle(color: theme.colorScheme.error),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: vm.cargar,
+                        child: const Text('Reintentar'),
+                      ),
+                    ],
+                  ),
+                ),
+
               Center(child: ProfileHeader(usuario: usuario)),
               const SizedBox(height: 24),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -75,15 +114,22 @@ class ProfileScreen extends StatelessWidget {
               ),
               ProfileInfoTile(label: 'Nombres', value: usuario.nombres),
               const SizedBox(height: 10),
+              ProfileInfoTile(label: 'Apellidos', value: usuario.apellidos),
+              const SizedBox(height: 10),
               ProfileInfoTile(label: 'Correo', value: usuario.correo),
               const SizedBox(height: 10),
               ProfileInfoTile(
                 label: 'Número de teléfono',
                 value: usuario.telefono ?? '—',
               ),
+              const SizedBox(height: 24),
+
+              Text('Seguridad', style: tituloSeccion),
               const SizedBox(height: 10),
+              // Nunca se muestra la contraseña real (el backend solo guarda el hash).
               const ProfileInfoTile(label: 'Contraseña', value: '••••••••••'),
               const SizedBox(height: 24),
+
               Text('Preferencias', style: tituloSeccion),
               const SizedBox(height: 10),
               PreferenceTile(
