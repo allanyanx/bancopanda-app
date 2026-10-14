@@ -1,6 +1,7 @@
 class Usuario {
   const Usuario({
     required this.usuarioId,
+    required this.nombreUsuario,
     required this.nombres,
     required this.apellidos,
     required this.cedula,
@@ -9,6 +10,7 @@ class Usuario {
   });
 
   final String usuarioId;
+  final String nombreUsuario;
   final String nombres;
   final String apellidos;
   final String cedula;
@@ -22,6 +24,7 @@ class Usuario {
   factory Usuario.fromJson(Map<String, dynamic> json) {
     return Usuario(
       usuarioId: json['usuarioId'] as String,
+      nombreUsuario: json['nombreUsuario'] as String? ?? '',
       nombres: json['nombres'] as String,
       apellidos: json['apellidos'] as String,
       cedula: json['cedula'] as String,
@@ -32,6 +35,7 @@ class Usuario {
 
   Map<String, dynamic> toJson() => {
         'usuarioId': usuarioId,
+        'nombreUsuario': nombreUsuario,
         'nombres': nombres,
         'apellidos': apellidos,
         'cedula': cedula,

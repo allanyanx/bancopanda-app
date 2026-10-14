@@ -17,11 +17,12 @@ Map<String, dynamic> sesionJson({required DateTime expiraEn}) => {
       'expiraEn': expiraEn.toUtc().toIso8601String(),
       'usuario': {
         'usuarioId': '01a1275f-f1f4-7253-b408-302f76430b92',
+        'nombreUsuario': 'andrea.barroso',
         'nombres': 'Andrea',
         'apellidos': 'Barroso Torres',
         'cedula': '1234567890',
         'correo': 'prueba@bancopanda.test',
-        'telefono': '0987654321',
+        'telefono': '+593987654321',
       },
     };
 
@@ -37,7 +38,7 @@ class FakeAuthDataSource implements AuthDataSource {
 
   @override
   Future<Sesion> login({
-    required String identificador,
+    required String nombreUsuario,
     required String contrasena,
   }) =>
       _responder();
@@ -80,7 +81,7 @@ void main() {
   test('login correcto: inicia sesión, guarda la sesión y entrega el token',
       () async {
     final ok = await viewModel.login(
-      identificador: 'prueba@bancopanda.test',
+      nombreUsuario: 'andrea.barroso',
       contrasena: 'Panda2026',
     );
 
@@ -99,7 +100,7 @@ void main() {
       statusCode: 401,
     );
 
-    final ok = await viewModel.login(identificador: 'x@y.com', contrasena: 'z');
+    final ok = await viewModel.login(nombreUsuario: 'otro.usuario', contrasena: 'z');
 
     expect(ok, isFalse);
     expect(viewModel.isLoggedIn, isFalse);
@@ -112,11 +113,12 @@ void main() {
   test('registro correcto: deja la sesión iniciada', () async {
     final ok = await viewModel.register(
       const DatosRegistro(
+        nombreUsuario: 'andrea.barroso',
         cedula: '1234567890',
         nombres: 'Andrea',
         apellidos: 'Barroso Torres',
         correo: 'prueba@bancopanda.test',
-        telefono: '0987654321',
+        telefono: '+593987654321',
         contrasena: 'Panda2026',
         aceptaTerminos: true,
       ),
@@ -149,7 +151,7 @@ void main() {
   });
 
   test('cerrar sesión borra la sesión y el token', () async {
-    await viewModel.login(identificador: 'a@b.com', contrasena: 'Panda2026');
+    await viewModel.login(nombreUsuario: 'andrea.barroso', contrasena: 'Panda2026');
 
     await viewModel.logout();
 

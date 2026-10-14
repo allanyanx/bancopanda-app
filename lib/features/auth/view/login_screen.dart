@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/router/app_router.dart';
+import '../../../core/utils/input_formatters.dart';
 import '../../../core/utils/proximamente.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/app_button.dart';
@@ -21,12 +22,12 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _identificador = TextEditingController();
+  final _nombreUsuario = TextEditingController();
   final _contrasena = TextEditingController();
 
   @override
   void dispose() {
-    _identificador.dispose();
+    _nombreUsuario.dispose();
     _contrasena.dispose();
     super.dispose();
   }
@@ -36,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     await context.read<AuthViewModel>().login(
-          identificador: _identificador.text.trim(),
+          nombreUsuario: _nombreUsuario.text.trim(),
           contrasena: _contrasena.text,
         );
   }
@@ -71,11 +72,12 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 28),
             AppTextField(
-              hint: 'Correo electrónico o cédula',
+              hint: 'Nombre de usuario',
               icon: Icons.person_outline,
-              controller: _identificador,
-              validator: Validators.correoOCedula,
-              keyboardType: TextInputType.emailAddress,
+              controller: _nombreUsuario,
+              validator: Validators.nombreUsuarioLogin,
+              keyboardType: TextInputType.visiblePassword,
+              inputFormatters: InputFormatters.nombreUsuario,
             ),
             const SizedBox(height: 16),
             AppTextField(

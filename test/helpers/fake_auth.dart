@@ -15,6 +15,7 @@ class _FakeAuthDataSource implements AuthDataSource {
     expiraEn: DateTime.now().toUtc().add(const Duration(hours: 1)),
     usuario: const Usuario(
       usuarioId: '01a1275f-f1f4-7253-b408-302f76430b92',
+      nombreUsuario: 'andrea.barroso',
       nombres: 'Andrea',
       apellidos: 'Barroso Torres',
       cedula: '1234567890',
@@ -24,7 +25,7 @@ class _FakeAuthDataSource implements AuthDataSource {
 
   @override
   Future<Sesion> login({
-    required String identificador,
+    required String nombreUsuario,
     required String contrasena,
   }) async => _sesion;
 
@@ -42,7 +43,7 @@ Future<AuthViewModel> authConSesionIniciada() async {
     ),
   );
   await auth.login(
-    identificador: 'prueba@bancopanda.test',
+    nombreUsuario: 'andrea.barroso',
     contrasena: 'Panda2026',
   );
   return auth;

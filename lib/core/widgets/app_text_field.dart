@@ -12,6 +12,7 @@ class AppTextField extends StatefulWidget {
     this.validator,
     this.keyboardType,
     this.inputFormatters,
+    this.prefixText,
     this.textCapitalization = TextCapitalization.none,
     this.isPassword = false,
     this.textInputAction = TextInputAction.next,
@@ -24,6 +25,7 @@ class AppTextField extends StatefulWidget {
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
+  final String? prefixText;
   final TextCapitalization textCapitalization;
   final bool isPassword;
   final TextInputAction textInputAction;
@@ -53,7 +55,24 @@ class _AppTextFieldState extends State<AppTextField> {
       style: const TextStyle(color: AppColors.textPrimary),
       decoration: InputDecoration(
         hintText: widget.hint,
-        prefixIcon: Icon(widget.icon),
+        prefixIcon: widget.prefixText == null
+            ? Icon(widget.icon)
+            : Padding(
+                padding: const EdgeInsetsDirectional.only(start: 12, end: 4),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(widget.icon),
+                    const SizedBox(width: 10),
+                    Text(
+                      widget.prefixText!,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
         suffixIcon: widget.isPassword
             ? IconButton(
                 tooltip: _oculto ? 'Mostrar contraseña' : 'Ocultar contraseña',

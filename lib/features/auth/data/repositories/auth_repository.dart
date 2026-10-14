@@ -21,11 +21,11 @@ class AuthRepository {
   final ApiClient _apiClient;
 
   Future<Sesion> login({
-    required String identificador,
+    required String nombreUsuario,
     required String contrasena,
   }) async {
     final sesion = await _dataSource.login(
-      identificador: identificador,
+      nombreUsuario: nombreUsuario,
       contrasena: contrasena,
     );
     await _save(sesion);

@@ -1,5 +1,6 @@
 class DatosRegistro {
   const DatosRegistro({
+    required this.nombreUsuario,
     required this.cedula,
     required this.nombres,
     required this.apellidos,
@@ -9,6 +10,7 @@ class DatosRegistro {
     required this.aceptaTerminos,
   });
 
+  final String nombreUsuario;
   final String cedula;
   final String nombres;
   final String apellidos;
@@ -18,6 +20,7 @@ class DatosRegistro {
   final bool aceptaTerminos;
 
   Map<String, dynamic> toJson() => {
+        'nombreUsuario': nombreUsuario,
         'cedula': cedula,
         'nombres': nombres,
         'apellidos': apellidos,

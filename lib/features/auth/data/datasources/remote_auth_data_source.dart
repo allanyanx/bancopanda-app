@@ -10,11 +10,11 @@ class RemoteAuthDataSource implements AuthDataSource {
 
   @override
   Future<Sesion> login({
-    required String identificador,
+    required String nombreUsuario,
     required String contrasena,
   }) async {
     final json = await _api.post('/api/auth/login', {
-      'identificador': identificador,
+      'nombreUsuario': nombreUsuario,
       'contrasena': contrasena,
     });
     return Sesion.fromJson(json);

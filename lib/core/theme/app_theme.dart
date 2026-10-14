@@ -34,6 +34,7 @@ abstract final class AppTheme {
         filled: true,
         fillColor: isDark ? AppColors.surfaceMint : AppColors.fieldFill,
         hintStyle: const TextStyle(color: AppColors.textSecondary),
+        errorMaxLines: 3,
         prefixIconColor: AppColors.textSecondary,
         suffixIconColor: AppColors.textSecondary,
         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),

@@ -1,8 +1,31 @@
 abstract final class Validators {
-  static final _correoRegex = RegExp(r'^[\w.+-]+@[\w-]+(\.[\w-]+)+$');
   static final _nombreRegex = RegExp(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]{2,60}$');
-  static final _telefonoRegex = RegExp(r'^09\d{8}$');
   static final _cedulaRegex = RegExp(r'^\d{10}$');
+  static final _celularRegex = RegExp(r'^9\d{8}$');
+  static final _usuarioCaracteres = RegExp(r'^[a-z0-9._]+$');
+  static final _correoCaracteres = RegExp(r'^[a-z0-9._@-]+$');
+  static final _correoUsuario = RegExp(r'^[a-z0-9]([a-z0-9._-]*[a-z0-9])?$');
+  static final _correoDominio = RegExp(
+    r'^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*\.[a-z]{2,}$',
+  );
+
+  static String? nombreUsuario(String? value) {
+    final texto = value?.trim() ?? '';
+    if (texto.isEmpty) return 'Elige un nombre de usuario';
+    if (texto.length < 4 || texto.length > 20) {
+      return 'Debe tener entre 4 y 20 caracteres';
+    }
+    if (!RegExp(r'^[a-z]').hasMatch(texto)) return 'Debe empezar con una letra';
+    if (!_usuarioCaracteres.hasMatch(texto)) {
+      return 'Solo letras minúsculas, números, punto (.) o guion bajo (_)';
+    }
+    return null;
+  }
+
+  static String? nombreUsuarioLogin(String? value) {
+    final texto = value?.trim() ?? '';
+    return texto.isEmpty ? 'Ingresa tu nombre de usuario' : null;
+  }
 
   static String? nombres(String? value) => _nombre(value, 'tus nombres');
 
@@ -18,7 +41,22 @@ abstract final class Validators {
   static String? correo(String? value) {
     final texto = value?.trim() ?? '';
     if (texto.isEmpty) return 'Ingresa tu correo electrónico';
-    if (!_correoRegex.hasMatch(texto)) return 'Correo electrónico no válido';
+    if (texto != texto.toLowerCase()) return 'Escribe el correo en minúsculas';
+    if (!_correoCaracteres.hasMatch(texto)) {
+      return 'Solo se permiten letras, números, punto (.), guion (-) y guion bajo (_)';
+    }
+
+    final partes = texto.split('@');
+    if (partes.length != 2 || partes[0].isEmpty || partes[1].isEmpty) {
+      return 'Escribe un correo como nombre@dominio.com';
+    }
+    if (texto.contains('..')) return 'El correo no puede tener dos puntos seguidos';
+    if (!_correoUsuario.hasMatch(partes[0])) {
+      return 'Antes de la @ debe empezar y terminar con una letra o un número';
+    }
+    if (!_correoDominio.hasMatch(partes[1])) {
+      return 'Revisa el dominio, por ejemplo: @gmail.com';
+    }
     return null;
   }
 
@@ -29,16 +67,12 @@ abstract final class Validators {
     return null;
   }
 
-  static String? correoOCedula(String? value) {
+  static String? celular(String? value) {
     final texto = value?.trim() ?? '';
-    if (texto.isEmpty) return 'Ingresa tu correo o cédula';
-    return texto.contains('@') ? correo(texto) : cedula(texto);
-  }
-
-  static String? telefono(String? value) {
-    final texto = value?.trim() ?? '';
-    if (texto.isEmpty) return 'Ingresa tu número de teléfono';
-    if (!_telefonoRegex.hasMatch(texto)) return 'Debe tener 10 dígitos y empezar con 09';
+    if (texto.isEmpty) return 'Ingresa tu número de celular';
+    if (!_celularRegex.hasMatch(texto)) {
+      return 'Escribe los 9 dígitos después de +593, empezando con 9';
+    }
     return null;
   }
 

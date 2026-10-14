@@ -26,12 +26,12 @@ class AuthViewModel extends ChangeNotifier {
   }
 
   Future<bool> login({
-    required String identificador,
+    required String nombreUsuario,
     required String contrasena,
   }) {
     return _run(
       () => _repository.login(
-        identificador: identificador,
+        nombreUsuario: nombreUsuario,
         contrasena: contrasena,
       ),
     );

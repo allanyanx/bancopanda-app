@@ -3,7 +3,7 @@ import '../../model/sesion.dart';
 
 abstract interface class AuthDataSource {
   Future<Sesion> login({
-    required String identificador,
+    required String nombreUsuario,
     required String contrasena,
   });
 

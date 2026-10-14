@@ -112,6 +112,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ],
               ),
+              ProfileInfoTile(
+                label: 'Nombre de usuario',
+                value: usuario.nombreUsuario,
+              ),
+              const SizedBox(height: 10),
               ProfileInfoTile(label: 'Nombres', value: usuario.nombres),
               const SizedBox(height: 10),
               ProfileInfoTile(label: 'Apellidos', value: usuario.apellidos),
@@ -119,7 +124,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ProfileInfoTile(label: 'Correo', value: usuario.correo),
               const SizedBox(height: 10),
               ProfileInfoTile(
-                label: 'Número de teléfono',
+                label: 'Número de celular',
                 value: usuario.telefono ?? '—',
               ),
               const SizedBox(height: 24),

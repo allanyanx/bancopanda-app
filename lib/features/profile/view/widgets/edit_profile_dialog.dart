@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/utils/celular.dart';
+import '../../../../core/utils/input_formatters.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../auth/model/usuario.dart';
 import '../../model/datos_perfil.dart';
@@ -32,7 +34,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
   late final _apellidos = TextEditingController(text: widget.usuario.apellidos);
   late final _correo = TextEditingController(text: widget.usuario.correo);
   late final _telefono = TextEditingController(
-    text: widget.usuario.telefono ?? '',
+    text: Celular.local(widget.usuario.telefono),
   );
   final _contrasena = TextEditingController();
   final _confirmacion = TextEditingController();
@@ -64,7 +66,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
         nombres: _nombres.text.trim(),
         apellidos: _apellidos.text.trim(),
         correo: _correo.text.trim(),
-        telefono: _telefono.text.trim(),
+        telefono: Celular.completo(_telefono.text),
         contrasenaActual: nueva.isEmpty ? null : _contrasenaActual.text,
         contrasenaNueva: nueva.isEmpty ? null : nueva,
       ),
@@ -110,25 +112,29 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                 label: 'Nombres',
                 controller: _nombres,
                 validator: Validators.nombres,
+                formatters: InputFormatters.soloLetras,
               ),
               const SizedBox(height: 12),
               _Campo(
                 label: 'Apellidos',
                 controller: _apellidos,
                 validator: Validators.apellidos,
+                formatters: InputFormatters.soloLetras,
               ),
               const SizedBox(height: 12),
               _Campo(
                 label: 'Correo',
                 controller: _correo,
                 validator: Validators.correo,
+                formatters: InputFormatters.correo,
                 keyboardType: TextInputType.emailAddress,
               ),
               const SizedBox(height: 12),
               _Campo(
-                label: 'Número de teléfono',
+                label: 'Número de celular',
+                prefixText: '${Celular.prefijo} ',
                 controller: _telefono,
-                validator: Validators.telefono,
+                validator: Validators.celular,
                 keyboardType: TextInputType.phone,
                 formatters: [
                   FilteringTextInputFormatter.digitsOnly,
@@ -215,6 +221,7 @@ class _Campo extends StatelessWidget {
     this.validator,
     this.keyboardType,
     this.formatters,
+    this.prefixText,
     this.isPassword = false,
   });
 
@@ -223,6 +230,7 @@ class _Campo extends StatelessWidget {
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? formatters;
+  final String? prefixText;
   final bool isPassword;
 
   @override
@@ -237,6 +245,8 @@ class _Campo extends StatelessWidget {
       style: const TextStyle(color: AppColors.textPrimary),
       decoration: InputDecoration(
         labelText: label,
+        prefixText: prefixText,
+        prefixStyle: const TextStyle(color: AppColors.textPrimary),
         labelStyle: const TextStyle(color: AppColors.textSecondary),
       ),
     );

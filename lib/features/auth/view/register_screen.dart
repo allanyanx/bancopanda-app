@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/celular.dart';
+import '../../../core/utils/input_formatters.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/app_text_field.dart';
@@ -28,6 +30,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   ];
 
   final _formKey = GlobalKey<FormState>();
+  final _nombreUsuario = TextEditingController();
   final _cedula = TextEditingController();
   final _nombres = TextEditingController();
   final _apellidos = TextEditingController();
@@ -42,6 +45,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   void dispose() {
     for (final controller in [
+      _nombreUsuario,
       _cedula,
       _nombres,
       _apellidos,
@@ -64,11 +68,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     await context.read<AuthViewModel>().register(
           DatosRegistro(
+            nombreUsuario: _nombreUsuario.text.trim(),
             cedula: _cedula.text.trim(),
             nombres: _nombres.text.trim(),
             apellidos: _apellidos.text.trim(),
             correo: _correo.text.trim(),
-            telefono: _telefono.text.trim(),
+            telefono: Celular.completo(_telefono.text),
             contrasena: _contrasena.text,
             aceptaTerminos: _aceptaTerminos,
           ),
@@ -125,6 +130,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               validator: Validators.nombres,
               keyboardType: TextInputType.name,
               textCapitalization: TextCapitalization.words,
+              inputFormatters: InputFormatters.soloLetras,
             ),
             const SizedBox(height: 14),
             AppTextField(
@@ -134,6 +140,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               validator: Validators.apellidos,
               keyboardType: TextInputType.name,
               textCapitalization: TextCapitalization.words,
+              inputFormatters: InputFormatters.soloLetras,
             ),
             const SizedBox(height: 14),
             AppTextField(
@@ -142,15 +149,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
               controller: _correo,
               validator: Validators.correo,
               keyboardType: TextInputType.emailAddress,
+              inputFormatters: InputFormatters.correo,
             ),
             const SizedBox(height: 14),
             AppTextField(
-              hint: 'Número de teléfono',
+              hint: 'Número de celular',
               icon: Icons.phone_outlined,
+              prefixText: Celular.prefijo,
               controller: _telefono,
-              validator: Validators.telefono,
+              validator: Validators.celular,
               keyboardType: TextInputType.phone,
-              inputFormatters: _soloDiezDigitos,
+              inputFormatters: InputFormatters.celular,
+            ),
+            const SizedBox(height: 14),
+            AppTextField(
+              hint: 'Nombre de usuario',
+              icon: Icons.alternate_email,
+              controller: _nombreUsuario,
+              validator: Validators.nombreUsuario,
+              keyboardType: TextInputType.visiblePassword,
+              inputFormatters: InputFormatters.nombreUsuario,
             ),
             const SizedBox(height: 14),
             AppTextField(
