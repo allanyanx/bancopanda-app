@@ -20,6 +20,9 @@ class AuthViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
 
+  bool _mostrarBienvenida = false;
+  bool get mostrarBienvenida => _mostrarBienvenida;
+
   Future<void> restoreSession() async {
     _sesion = await _repository.restoreSession();
     notifyListeners();
@@ -59,10 +62,12 @@ class AuthViewModel extends ChangeNotifier {
 
     _isLoading = true;
     _error = null;
+    _mostrarBienvenida = false;
     notifyListeners();
 
     try {
       _sesion = await action();
+      _mostrarBienvenida = true;
       return true;
     } on AppException catch (e) {
       _error = e.message;
@@ -80,6 +85,12 @@ class AuthViewModel extends ChangeNotifier {
     final actual = _sesion;
     if (actual == null) return;
     _sesion = await _repository.actualizarUsuario(actual, usuario);
+    notifyListeners();
+  }
+
+  void terminarBienvenida() {
+    if (!_mostrarBienvenida) return;
+    _mostrarBienvenida = false;
     notifyListeners();
   }
 }

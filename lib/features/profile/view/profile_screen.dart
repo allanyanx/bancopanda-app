@@ -6,10 +6,9 @@ import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/theme_view_model.dart';
 import '../viewmodel/profile_view_model.dart';
-import 'widgets/edit_profile_dialog.dart';
 import 'widgets/preference_tile.dart';
 import 'widgets/profile_header.dart';
-import 'widgets/profile_info_tile.dart';
+import 'widgets/profile_menu_tile.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -35,7 +34,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (usuario == null) return const SizedBox.shrink();
 
     final theme = Theme.of(context);
-    final tituloSeccion = theme.textTheme.titleMedium?.copyWith(
+    final titulo = theme.textTheme.titleMedium?.copyWith(
       fontWeight: FontWeight.w600,
       color: theme.brightness == Brightness.dark
           ? AppColors.primary
@@ -49,27 +48,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    tooltip: 'Volver',
-                    icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                    onPressed: () => context.canPop()
-                        ? context.pop()
-                        : context.go(AppRoutes.home),
-                  ),
-                  TextButton(
-                    onPressed: vm.cerrarSesion,
-                    style: TextButton.styleFrom(
-                      foregroundColor: AppColors.error,
-                      textStyle: theme.textTheme.bodyLarge,
-                    ),
-                    child: const Text('Cerrar Sesión'),
-                  ),
-                ],
+              Align(
+                alignment: Alignment.centerLeft,
+                child: IconButton(
+                  tooltip: 'Volver',
+                  icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                  onPressed: () => context.canPop()
+                      ? context.pop()
+                      : context.go(AppRoutes.home),
+                ),
               ),
-
               if (vm.cargando) const LinearProgressIndicator(minHeight: 3),
               if (vm.errorCarga != null)
                 Padding(
@@ -95,46 +83,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ],
                   ),
                 ),
-
               Center(child: ProfileHeader(usuario: usuario)),
-              const SizedBox(height: 24),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Datos Personales', style: tituloSeccion),
-                  TextButton(
-                    onPressed: () => mostrarEditarPerfil(context, usuario),
-                    style: TextButton.styleFrom(
-                      foregroundColor: AppColors.error,
-                    ),
-                    child: const Text('Editar'),
-                  ),
-                ],
+              const SizedBox(height: 28),
+              Text('Información', style: titulo),
+              const SizedBox(height: 10),
+              ProfileMenuTile(
+                label: 'Datos Personales',
+                onTap: () => context.push(AppRoutes.profileData),
               ),
-              ProfileInfoTile(
-                label: 'Nombre de usuario',
-                value: usuario.nombreUsuario,
+              const SizedBox(height: 20),
+              Text('Seguridad', style: titulo),
+              const SizedBox(height: 10),
+              ProfileMenuTile(
+                label: 'Seguridad',
+                onTap: () => context.push(AppRoutes.profileSecurity),
               ),
-              const SizedBox(height: 10),
-              ProfileInfoTile(label: 'Nombres', value: usuario.nombres),
-              const SizedBox(height: 10),
-              ProfileInfoTile(label: 'Apellidos', value: usuario.apellidos),
-              const SizedBox(height: 10),
-              ProfileInfoTile(label: 'Correo', value: usuario.correo),
-              const SizedBox(height: 10),
-              ProfileInfoTile(
-                label: 'Número de celular',
-                value: usuario.telefono ?? '—',
-              ),
-              const SizedBox(height: 24),
-
-              Text('Seguridad', style: tituloSeccion),
-              const SizedBox(height: 10),
-              const ProfileInfoTile(label: 'Contraseña', value: '••••••••••'),
-              const SizedBox(height: 24),
-
-              Text('Preferencias', style: tituloSeccion),
+              const SizedBox(height: 20),
+              Text('Preferencias', style: titulo),
               const SizedBox(height: 10),
               PreferenceTile(
                 label: 'Notificaciones',
@@ -146,6 +111,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 label: 'Modo oscuro',
                 value: tema.isDark,
                 onChanged: tema.setDarkMode,
+              ),
+              const SizedBox(height: 16),
+              Center(
+                child: TextButton(
+                  onPressed: vm.cerrarSesion,
+                  style: TextButton.styleFrom(foregroundColor: AppColors.error),
+                  child: const Text('Cerrar Sesión'),
+                ),
               ),
             ],
           ),

@@ -6,6 +6,7 @@ import '../../auth/model/usuario.dart';
 import '../../auth/viewmodel/auth_view_model.dart';
 import '../data/repositories/profile_repository.dart';
 import '../model/datos_perfil.dart';
+import '../model/cambio_contrasena.dart';
 
 class ProfileViewModel extends ChangeNotifier {
   ProfileViewModel({
@@ -48,6 +49,23 @@ class ProfileViewModel extends ChangeNotifier {
     try {
       final actualizado = await _repository.actualizar(datos);
       await _auth.actualizarUsuario(actualizado);
+      return true;
+    } on AppException catch (e) {
+      error = e.message;
+      if (e.statusCode == 401) await _auth.logout();
+      return false;
+    } finally {
+      guardando = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> cambiarContrasena(CambioContrasena datos) async {
+    guardando = true;
+    error = null;
+    notifyListeners();
+    try {
+      await _repository.cambiarContrasena(datos);
       return true;
     } on AppException catch (e) {
       error = e.message;

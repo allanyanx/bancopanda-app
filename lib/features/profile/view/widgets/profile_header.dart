@@ -20,8 +20,8 @@ class ProfileHeader extends StatelessWidget {
         Stack(
           children: [
             CircleAvatar(
-              radius: 60,
-              backgroundColor: AppColors.surfaceMint,
+              radius: 56,
+              backgroundColor: AppColors.fieldBorder,
               child: Text(
                 iniciales,
                 style: theme.textTheme.displaySmall?.copyWith(
@@ -34,8 +34,8 @@ class ProfileHeader extends StatelessWidget {
               right: 4,
               top: 4,
               child: Container(
-                width: 24,
-                height: 24,
+                width: 22,
+                height: 22,
                 decoration: BoxDecoration(
                   color: AppColors.primaryDeep,
                   shape: BoxShape.circle,
