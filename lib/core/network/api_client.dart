@@ -10,7 +10,7 @@ class ApiClient {
   ApiClient({required this._settings, http.Client? httpClient})
     : _http = httpClient ?? http.Client();
 
-  static const _timeout = Duration(seconds: 10);
+  static const _timeout = Duration(seconds: 100);
 
   final AppSettings _settings;
   final http.Client _http;

@@ -5,7 +5,7 @@ import '../storage/key_value_storage.dart';
 class AppSettings extends ChangeNotifier {
   AppSettings(this._storage);
 
-  static const defaultServerUrl = 'http://10.0.2.2:5258';
+  static const defaultServerUrl = 'https://bancopanda-api.onrender.com';
   static const _serverUrlKey = 'url_servidor';
 
   final KeyValueStorage _storage;
@@ -32,6 +32,8 @@ class AppSettings extends ChangeNotifier {
 
   static String _normalizar(String url) {
     final limpia = url.trim();
-    return limpia.endsWith('/') ? limpia.substring(0, limpia.length - 1) : limpia;
+    return limpia.endsWith('/')
+        ? limpia.substring(0, limpia.length - 1)
+        : limpia;
   }
 }

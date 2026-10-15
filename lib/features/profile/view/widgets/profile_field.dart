@@ -36,6 +36,7 @@ class _ProfileFieldState extends State<ProfileField> {
 
   @override
   Widget build(BuildContext context) {
+    const estiloTexto = TextStyle(color: AppColors.textPrimary, fontSize: 16);
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 10, 8, 8),
       decoration: BoxDecoration(
@@ -56,11 +57,15 @@ class _ProfileFieldState extends State<ProfileField> {
               inputFormatters: widget.formatters,
               obscureText: widget.isPassword && _oculto,
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              style: const TextStyle(color: AppColors.textPrimary),
+              style: estiloTexto,
               decoration: InputDecoration(
+                prefixIconConstraints: const BoxConstraints(
+                  minWidth: 0,
+                  minHeight: 0,
+                ),
                 labelText: widget.label,
                 prefixText: widget.prefixText,
-                prefixStyle: const TextStyle(color: AppColors.textPrimary),
+                prefixStyle: estiloTexto,
                 // La etiqueta nunca se mueve: siempre queda arriba.
                 floatingLabelBehavior: FloatingLabelBehavior.always,
                 labelStyle: const TextStyle(
