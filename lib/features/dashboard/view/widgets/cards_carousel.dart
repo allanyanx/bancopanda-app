@@ -9,14 +9,12 @@ class CardsCarousel extends StatelessWidget {
     super.key,
     required this.tarjetas,
     required this.titular,
-    required this.saldoVisible,
     required this.padding,
     required this.onTarjeta,
   });
 
   final List<Tarjeta> tarjetas;
   final String titular;
-  final bool saldoVisible;
   final double padding;
   final ValueChanged<Tarjeta> onTarjeta;
 
@@ -53,7 +51,6 @@ class CardsCarousel extends StatelessWidget {
           tarjeta: tarjetas[index],
           titular: titular,
           color: colores[index % colores.length],
-          saldoVisible: saldoVisible,
           onTap: () => onTarjeta(tarjetas[index]),
         ),
       ),

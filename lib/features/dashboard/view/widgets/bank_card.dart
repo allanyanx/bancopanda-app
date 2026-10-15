@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../model/tarjeta.dart';
-import 'balance_card.dart';
 
 class BankCard extends StatelessWidget {
   const BankCard({
@@ -11,7 +10,6 @@ class BankCard extends StatelessWidget {
     required this.tarjeta,
     required this.titular,
     required this.color,
-    required this.saldoVisible,
     required this.onTap,
   });
 
@@ -21,7 +19,6 @@ class BankCard extends StatelessWidget {
   final Tarjeta tarjeta;
   final String titular;
   final Color color;
-  final bool saldoVisible;
   final VoidCallback onTap;
 
   @override
@@ -64,23 +61,9 @@ class BankCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          saldoVisible
-                              ? Formatters.moneda(tarjeta.saldo)
-                              : BalanceCard.saldoOculto,
-                          style: textTheme.bodyLarge?.copyWith(
-                            color: AppColors.textOnDark,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        Text(
-                          tarjeta.nombre,
-                          style: textTheme.labelSmall?.copyWith(color: tenue),
-                        ),
-                      ],
+                    Text(
+                      tarjeta.nombre,
+                      style: textTheme.labelSmall?.copyWith(color: tenue),
                     ),
                   ],
                 ),

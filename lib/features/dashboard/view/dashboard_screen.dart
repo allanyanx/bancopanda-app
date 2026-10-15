@@ -133,7 +133,6 @@ class _DashboardContent extends StatelessWidget {
         CardsCarousel(
           tarjetas: resumen.tarjetas,
           titular: titular,
-          saldoVisible: saldoVisible,
           padding: _margen,
           onTarjeta: (tarjeta) =>
               context.push(AppRoutes.movements, extra: tarjeta),

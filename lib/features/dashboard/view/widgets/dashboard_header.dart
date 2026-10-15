@@ -19,36 +19,27 @@ class DashboardHeader extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
-              Row(
-                children: [
-                  Image.asset(_logo, height: 26),
-                  const SizedBox(width: 6),
-                  Flexible(
-                    child: Text.rich(
+              Image.asset(_logo, height: 26),
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text.rich(
+                  TextSpan(
+                    text: 'Hola, ',
+                    children: [
                       TextSpan(
-                        text: 'Hola, ',
-                        children: [
-                          TextSpan(
-                            text: nombre,
-                            style: TextStyle(color: verde),
-                          ),
-                        ],
+                        text: nombre,
+                        style: TextStyle(color: verde),
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
-              Text(
-                'Te damos la bienvenida a Banco Panda',
-                style: theme.textTheme.bodySmall?.copyWith(color: verde),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ],
           ),
