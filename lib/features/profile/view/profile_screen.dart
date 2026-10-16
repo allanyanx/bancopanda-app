@@ -4,9 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/theme_view_model.dart';
 import '../viewmodel/profile_view_model.dart';
-import 'widgets/preference_tile.dart';
 import 'widgets/profile_header.dart';
 import 'widgets/profile_menu_tile.dart';
 
@@ -29,7 +27,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<ProfileViewModel>();
-    final tema = context.watch<ThemeViewModel>();
     final usuario = vm.usuario;
     if (usuario == null) return const SizedBox.shrink();
 
@@ -58,7 +55,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       : context.go(AppRoutes.home),
                 ),
               ),
-              if (vm.cargando) const LinearProgressIndicator(minHeight: 3),
               if (vm.errorCarga != null)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
@@ -101,16 +97,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(height: 20),
               Text('Preferencias', style: titulo),
               const SizedBox(height: 10),
-              PreferenceTile(
-                label: 'Notificaciones',
-                value: vm.notificaciones,
-                onChanged: vm.setNotificaciones,
-              ),
-              const SizedBox(height: 10),
-              PreferenceTile(
-                label: 'Modo oscuro',
-                value: tema.isDark,
-                onChanged: tema.setDarkMode,
+              ProfileMenuTile(
+                label: 'Configuración',
+                onTap: () => context.push(AppRoutes.profileSettings),
               ),
               const SizedBox(height: 16),
               Center(

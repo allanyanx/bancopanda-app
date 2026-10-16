@@ -1,15 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/router/app_router.dart';
-import '../../../core/utils/proximamente.dart';
+import '../../../core/widgets/status_dialog.dart';
+import '../viewmodel/profile_view_model.dart';
+import 'widgets/preference_tile.dart';
 import 'widgets/profile_menu_tile.dart';
 
-class SecurityScreen extends StatelessWidget {
+class SecurityScreen extends StatefulWidget {
   const SecurityScreen({super.key});
 
   @override
+  State<SecurityScreen> createState() => _SecurityScreenState();
+}
+
+class _SecurityScreenState extends State<SecurityScreen> {
+  Future<void> _cambiarHuella(bool activar) async {
+    await context.read<ProfileViewModel>().setHuella(activar);
+    if (!mounted) return;
+    await mostrarEstado(
+      context,
+      icono: Icons.fingerprint,
+      titulo: activar ? 'Huella activada' : 'Huella desactivada',
+      mensaje: activar
+          ? 'Se acaba de activar el acceso con huella.'
+          : 'Se desactivó el acceso con huella.',
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final vm = context.watch<ProfileViewModel>();
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -26,9 +49,10 @@ class SecurityScreen extends StatelessWidget {
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
-            ProfileMenuTile(
+            PreferenceTile(
               label: 'Huella',
-              onTap: () => mostrarProximamente(context),
+              value: vm.huella,
+              onChanged: _cambiarHuella,
             ),
             const SizedBox(height: 12),
             ProfileMenuTile(

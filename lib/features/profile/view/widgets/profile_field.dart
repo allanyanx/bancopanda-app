@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 
 import '../../../../core/theme/app_colors.dart';
 
-/// Campo del perfil: la etiqueta se queda fija arriba y el valor va debajo.
-/// En modo lectura (readOnly) se ve como una tarjeta; en edición se resalta el borde.
+/// Campo del perfil: la etiqueta va fija arriba y el valor debajo.
+/// En modo lectura se ve como tarjeta; en edición se resalta el borde.
 class ProfileField extends StatefulWidget {
   const ProfileField({
     super.key,
@@ -36,59 +36,74 @@ class _ProfileFieldState extends State<ProfileField> {
 
   @override
   Widget build(BuildContext context) {
-    const estiloTexto = TextStyle(color: AppColors.textPrimary, fontSize: 16);
+    final base = Theme.of(context).textTheme.bodyLarge;
+    final estiloTexto = base?.copyWith(
+      color: AppColors.textPrimary,
+      fontSize: 16,
+    );
+    final estiloEtiqueta = base?.copyWith(
+      color: AppColors.textSecondary,
+      fontSize: 14,
+    );
+
     return Container(
-      padding: const EdgeInsets.fromLTRB(20, 10, 8, 8),
+      padding: const EdgeInsets.fromLTRB(20, 12, 8, 10),
       decoration: BoxDecoration(
         color: AppColors.surfaceMint,
         borderRadius: BorderRadius.circular(20),
-        border: widget.readOnly
-            ? Border.all(color: Colors.transparent, width: 1.2)
-            : Border.all(color: AppColors.primary, width: 1.2),
+        border: Border.all(
+          color: widget.readOnly ? Colors.transparent : AppColors.primary,
+          width: 1.2,
+        ),
       ),
       child: Row(
         children: [
           Expanded(
-            child: TextFormField(
-              controller: widget.controller,
-              readOnly: widget.readOnly,
-              validator: widget.validator,
-              keyboardType: widget.keyboardType,
-              inputFormatters: widget.formatters,
-              obscureText: widget.isPassword && _oculto,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              style: estiloTexto,
-              decoration: InputDecoration(
-                prefixIconConstraints: const BoxConstraints(
-                  minWidth: 0,
-                  minHeight: 0,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(widget.label, style: estiloEtiqueta),
+                const SizedBox(height: 2),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  textBaseline: TextBaseline.alphabetic,
+                  children: [
+                    if (widget.prefixText != null)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 6),
+                        child: Text(widget.prefixText!, style: estiloTexto),
+                      ),
+                    Expanded(
+                      child: TextFormField(
+                        controller: widget.controller,
+                        readOnly: widget.readOnly,
+                        validator: widget.validator,
+                        keyboardType: widget.keyboardType,
+                        inputFormatters: widget.formatters,
+                        obscureText: widget.isPassword && _oculto,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        style: estiloTexto,
+                        decoration: const InputDecoration(
+                          isDense: true,
+                          filled: false,
+                          contentPadding: EdgeInsets.symmetric(vertical: 4),
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          errorBorder: InputBorder.none,
+                          focusedErrorBorder: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                labelText: widget.label,
-                prefixText: widget.prefixText,
-                prefixStyle: estiloTexto,
-                // La etiqueta nunca se mueve: siempre queda arriba.
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-                labelStyle: const TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: 15,
-                ),
-                floatingLabelStyle: const TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: 15,
-                ),
-                filled: false,
-                isDense: true,
-                contentPadding: const EdgeInsets.symmetric(vertical: 4),
-                border: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                errorBorder: InputBorder.none,
-                focusedErrorBorder: InputBorder.none,
-              ),
+              ],
             ),
           ),
           if (widget.isPassword)
             IconButton(
+              tooltip: _oculto ? 'Mostrar contraseña' : 'Ocultar contraseña',
               icon: Icon(
                 _oculto
                     ? Icons.visibility_off_outlined

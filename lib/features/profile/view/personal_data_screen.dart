@@ -66,20 +66,37 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
 
   Future<void> _actualizar() async {
     FocusScope.of(context).unfocus();
-    if (!_formKey.currentState!.validate()) return;
 
     final vm = context.read<ProfileViewModel>();
     final messenger = ScaffoldMessenger.of(context);
 
-    final ok = await vm.guardar(
-      DatosPerfil(
-        nombreUsuario: _usuario.text.trim(),
-        nombres: _nombres.text.trim(),
-        apellidos: _apellidos.text.trim(),
-        correo: _correo.text.trim(),
-        telefono: Celular.completo(_telefono.text),
-      ),
+    final datos = DatosPerfil(
+      nombreUsuario: _usuario.text.trim(),
+      nombres: _nombres.text.trim(),
+      apellidos: _apellidos.text.trim(),
+      correo: _correo.text.trim(),
+      telefono: Celular.completo(_telefono.text),
     );
+
+    if (!vm.hayCambios(datos)) {
+      setState(() {
+        _editando = false;
+        _version++;
+      });
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          const SnackBar(
+            content: Text('No hay cambios para guardar'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      return;
+    }
+
+    if (!_formKey.currentState!.validate()) return;
+
+    final ok = await vm.guardar(datos);
 
     if (!mounted || !ok) return;
     _restaurar();

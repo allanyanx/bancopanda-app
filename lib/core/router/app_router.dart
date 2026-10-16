@@ -12,6 +12,7 @@ import '../../features/profile/view/personal_data_screen.dart';
 import '../../features/profile/view/security_screen.dart';
 import '../../features/auth/view/welcome_screen.dart';
 import '../../features/profile/view/change_password_screen.dart';
+import '../../features/profile/view/preferences_screen.dart';
 
 abstract final class AppRoutes {
   static const login = '/login';
@@ -24,19 +25,22 @@ abstract final class AppRoutes {
   static const profileSecurity = '/perfil/seguridad';
   static const welcome = '/bienvenida';
   static const profilePassword = '/perfil/seguridad/contrasena';
+  static const profileSettings = '/perfil/configuracion';
 }
 
 GoRouter createAppRouter(AuthViewModel auth) {
   return GoRouter(
-    initialLocation: AppRoutes.login,
+    initialLocation: AppRoutes.welcome,
     refreshListenable: auth,
     redirect: (context, state) {
-      final enZonaPublica = state.matchedLocation.startsWith(AppRoutes.login);
+      final ubicacion = state.matchedLocation;
+
+      if (ubicacion == AppRoutes.welcome) return null;
+
+      final enZonaPublica = ubicacion.startsWith(AppRoutes.login);
 
       if (!auth.isLoggedIn && !enZonaPublica) return AppRoutes.login;
-      if (auth.isLoggedIn && enZonaPublica) {
-        return auth.mostrarBienvenida ? AppRoutes.welcome : AppRoutes.home;
-      }
+      if (auth.isLoggedIn && enZonaPublica) return AppRoutes.home;
       return null;
     },
     routes: [
@@ -79,6 +83,10 @@ GoRouter createAppRouter(AuthViewModel auth) {
                 builder: (context, state) => const ChangePasswordScreen(),
               ),
             ],
+          ),
+          GoRoute(
+            path: 'configuracion',
+            builder: (context, state) => const PreferencesScreen(),
           ),
         ],
       ),

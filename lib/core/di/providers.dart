@@ -28,8 +28,8 @@ Future<List<SingleChildWidget>> createProviders() async {
     apiClient: apiClient,
   );
 
+  // La sesión guardada se restaura en WelcomeScreen, no aquí.
   final authViewModel = AuthViewModel(authRepository);
-  await authViewModel.restoreSession();
 
   final profileViewModel = ProfileViewModel(
     repository: ProfileRepository(RemoteProfileDataSource(apiClient)),
@@ -37,6 +37,9 @@ Future<List<SingleChildWidget>> createProviders() async {
     storage: storage,
   );
   await profileViewModel.cargarPreferencias();
+
+  final themeViewModel = ThemeViewModel(storage);
+  await themeViewModel.cargar();
 
   final dashboardRepository = DashboardRepository(
     RemoteDashboardDataSource(apiClient),
@@ -47,6 +50,6 @@ Future<List<SingleChildWidget>> createProviders() async {
     Provider.value(value: dashboardRepository),
     ChangeNotifierProvider.value(value: authViewModel),
     ChangeNotifierProvider.value(value: profileViewModel),
-    ChangeNotifierProvider(create: (_) => ThemeViewModel()),
+    ChangeNotifierProvider.value(value: themeViewModel),
   ];
 }

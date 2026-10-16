@@ -7,6 +7,7 @@ import '../../auth/viewmodel/auth_view_model.dart';
 import '../data/repositories/profile_repository.dart';
 import '../model/datos_perfil.dart';
 import '../model/cambio_contrasena.dart';
+import '../../../core/utils/celular.dart';
 
 class ProfileViewModel extends ChangeNotifier {
   ProfileViewModel({
@@ -18,22 +19,34 @@ class ProfileViewModel extends ChangeNotifier {
        _storage = storage;
 
   static const _notificacionesKey = 'notificaciones';
+  static const _huellaKey = 'huella';
 
   final ProfileRepository _repository;
   final AuthViewModel _auth;
   final KeyValueStorage _storage;
 
+  bool notificaciones = true;
+  bool huella = false;
+
   bool guardando = false;
   String? error;
   bool cargando = false;
   String? errorCarga;
-  bool notificaciones = true;
 
   Usuario? get usuario => _auth.usuario;
 
   Future<void> cargarPreferencias() async {
     final guardada = await _storage.read(_notificacionesKey);
     if (guardada != null) notificaciones = guardada == 'true';
+    final guardadaHuella = await _storage.read(_huellaKey);
+    if (guardadaHuella != null) huella = guardadaHuella == 'true';
+    notifyListeners();
+  }
+
+  Future<void> setHuella(bool valor) async {
+    huella = valor;
+    notifyListeners();
+    await _storage.write(_huellaKey, valor.toString());
   }
 
   Future<void> setNotificaciones(bool valor) async {
@@ -81,6 +94,17 @@ class ProfileViewModel extends ChangeNotifier {
     if (error == null) return;
     error = null;
     notifyListeners();
+  }
+
+  bool hayCambios(DatosPerfil datos) {
+    final u = usuario;
+    if (u == null) return false;
+
+    return datos.nombreUsuario != u.nombreUsuario ||
+        datos.nombres != u.nombres ||
+        datos.apellidos != u.apellidos ||
+        datos.correo != u.correo ||
+        Celular.local(datos.telefono) != Celular.local(u.telefono);
   }
 
   Future<void> cargar() async {
