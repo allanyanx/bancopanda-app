@@ -107,4 +107,62 @@ void main() {
       expect(Validators.confirmarContrasena('Panda2027', 'Panda2026'), isNotNull);
     });
   });
+
+  group('Número de cuenta', () {
+    test('acepta de 6 a 20 dígitos (cuentas de cualquier banco)', () {
+      expect(Validators.numeroCuenta('5000900003'), isNull);
+      expect(Validators.numeroCuenta('220045'), isNull);
+      expect(Validators.numeroCuenta('12345678901234567890'), isNull);
+    });
+
+    test('rechaza vacío, muy cortos, muy largos o con letras', () {
+      expect(Validators.numeroCuenta(''), isNotNull);
+      expect(Validators.numeroCuenta('50009'), isNotNull);
+      expect(Validators.numeroCuenta('123456789012345678901'), isNotNull);
+      expect(Validators.numeroCuenta('50009000ab'), isNotNull);
+    });
+  });
+
+  group('Datos del beneficiario', () {
+    test('la cédula es obligatoria y de 10 dígitos', () {
+      expect(
+        Validators.cedulaBeneficiario(''),
+        'Ingresa la cédula del beneficiario',
+      );
+      expect(Validators.cedulaBeneficiario('0912'), isNotNull);
+      expect(Validators.cedulaBeneficiario('0923456781'), isNull);
+    });
+
+    test('el nombre es opcional pero, si se escribe, solo letras', () {
+      expect(Validators.nombreOpcional(''), isNull);
+      expect(Validators.nombreOpcional('Juan Pérez'), isNull);
+      expect(Validators.nombreOpcional('J'), isNotNull);
+    });
+  });
+
+  group('Monto', () {
+    String? validar(String valor) =>
+        Validators.monto(valor, disponible: 1000, maximo: 5000);
+
+    test('acepta montos con hasta 2 decimales dentro del saldo', () {
+      expect(validar('25'), isNull);
+      expect(validar('25.5'), isNull);
+      expect(validar('1000.00'), isNull);
+    });
+
+    test('rechaza vacío, cero y más de 2 decimales', () {
+      expect(validar(''), 'Ingresa el monto');
+      expect(validar('0'), 'El monto debe ser mayor a cero');
+      expect(validar('10.123'), isNotNull);
+      expect(validar('.'), isNotNull);
+    });
+
+    test('rechaza si pasa el saldo o el máximo', () {
+      expect(validar('1000.01'), 'No tienes saldo suficiente');
+      expect(
+        Validators.monto('5000.01', disponible: 9000, maximo: 5000),
+        r'El máximo por operación es $5,000.00',
+      );
+    });
+  });
 }

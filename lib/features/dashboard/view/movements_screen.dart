@@ -4,16 +4,12 @@ import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../auth/viewmodel/auth_view_model.dart';
 import '../data/repositories/dashboard_repository.dart';
-import '../model/tarjeta.dart';
 import '../viewmodel/movements_view_model.dart';
-import 'widgets/card_summary.dart';
 import 'widgets/load_error.dart';
 import 'widgets/movimiento_tile.dart';
 
 class MovementsScreen extends StatelessWidget {
-  const MovementsScreen({super.key, this.tarjeta});
-
-  final Tarjeta? tarjeta;
+  const MovementsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +17,6 @@ class MovementsScreen extends StatelessWidget {
       create: (context) => MovementsViewModel(
         repository: context.read<DashboardRepository>(),
         auth: context.read<AuthViewModel>(),
-        tarjeta: tarjeta,
       )..cargar(),
       child: const _MovementsView(),
     );
@@ -34,15 +29,10 @@ class _MovementsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<MovementsViewModel>();
-    final tarjeta = vm.tarjeta;
     final error = vm.error;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          tarjeta == null ? 'Movimientos' : 'Movimientos de la tarjeta',
-        ),
-      ),
+      appBar: AppBar(title: const Text('Movimientos')),
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: vm.cargar,
@@ -50,10 +40,6 @@ class _MovementsView extends StatelessWidget {
             physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
             children: [
-              if (tarjeta != null) ...[
-                CardSummary(tarjeta: tarjeta),
-                const SizedBox(height: 12),
-              ],
               if (error != null)
                 LoadError(mensaje: error, onReintentar: vm.cargar),
               if (vm.movimientos.isNotEmpty)
@@ -68,9 +54,7 @@ class _MovementsView extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(top: 12),
                   child: Text(
-                    tarjeta == null
-                        ? 'Aún no tienes movimientos'
-                        : 'Esta tarjeta aún no tiene movimientos',
+                    'Aún no tienes movimientos',
                     style: Theme.of(context).textTheme.bodyMedium
                         ?.copyWith(color: AppColors.textSecondary),
                   ),

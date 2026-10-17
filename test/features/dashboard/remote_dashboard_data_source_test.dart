@@ -58,12 +58,14 @@ void main() {
     final dataSource = dataSourceQueResponde([
       {
         'tarjetaId': 'd1000000-0000-4000-8000-000000000001',
+        'numeroTarjeta': '4754009171454821',
         'ultimosDigitos': '4821',
         'marca': 'Visa',
         'tipo': 'Debito',
         'fechaExpiracion': '2029-10-13',
         'activa': true,
         'cuentaId': 'c1000000-0000-4000-8000-000000000001',
+        'numeroCuenta': '5000900001',
         'saldo': 12456.80,
         'moneda': 'USD',
       },
@@ -76,49 +78,54 @@ void main() {
     expect(tarjeta.tipo, TipoTarjeta.debito);
     expect(tarjeta.nombre, 'Visa Débito');
     expect(tarjeta.numeroOculto, '•••• 4821');
+    expect(tarjeta.numeroFormateado, '4754 0091 7145 4821');
+    expect(tarjeta.numeroCuenta, '5000900001');
     expect(tarjeta.fechaExpiracion, DateTime(2029, 10, 13));
     expect(tarjeta.activa, isTrue);
   });
 
-  test('pide los movimientos de una tarjeta con su límite', () async {
-    final dataSource = dataSourceQueResponde([
-      {
-        'movimientoId': '58f4319d-87f5-440e-9455-65653f7a5797',
-        'descripcion': 'Pago de nómina',
-        'monto': 1850.00,
-        'tipo': 'Ingreso',
-        'categoria': 'Sueldo',
-        'fecha': '2026-10-13T09:34:57.188362Z',
-        'cuentaId': 'c1000000-0000-4000-8000-000000000001',
-      },
-    ]);
+  test('reconoce la categoría de efectivo móvil', () {
+    final movimiento = Movimiento.fromJson({
+      'movimientoId': 'm2',
+      'descripcion': 'Efectivo móvil para +593987654321',
+      'monto': 20,
+      'tipo': 'Egreso',
+      'categoria': 'EfectivoMovil',
+      'fecha': '2026-10-16T21:15:53Z',
+      'cuentaId': 'c1',
+    });
 
-    final movimiento = (await dataSource.obtenerMovimientosDeTarjeta(
-      'd1000000-0000-4000-8000-000000000001',
-      limite: 50,
-    )).single;
-
-    expect(
-      consultada.path,
-      '/api/tarjetas/d1000000-0000-4000-8000-000000000001/movimientos',
-    );
-    expect(consultada.queryParameters, {'limite': '50'});
-    expect(movimiento.descripcion, 'Pago de nómina');
-    expect(movimiento.esIngreso, isTrue);
-    expect(movimiento.categoria, CategoriaMovimiento.sueldo);
-    expect(movimiento.fecha.isUtc, isFalse);
-    expect(movimiento.fecha.toUtc().hour, 9);
+    expect(movimiento.categoria, CategoriaMovimiento.efectivoMovil);
+    expect(movimiento.categoria.etiqueta, 'Efectivo móvil');
   });
 
-  test('pide los últimos movimientos de todas las cuentas', () async {
-    final dataSource = dataSourceQueResponde([]);
+  test(
+    'pide los últimos movimientos de todas las cuentas con su límite',
+    () async {
+      final dataSource = dataSourceQueResponde([
+        {
+          'movimientoId': '58f4319d-87f5-440e-9455-65653f7a5797',
+          'descripcion': 'Pago de nómina',
+          'monto': 80.00,
+          'tipo': 'Ingreso',
+          'categoria': 'Sueldo',
+          'fecha': '2026-10-13T09:34:57.188362Z',
+          'cuentaId': 'c1000000-0000-4000-8000-000000000001',
+        },
+      ]);
 
-    final movimientos = await dataSource.obtenerMovimientos(limite: 5);
+      final movimiento = (await dataSource.obtenerMovimientos(limite: 5))
+          .single;
 
-    expect(consultada.path, '/api/movimientos');
-    expect(consultada.queryParameters, {'limite': '5'});
-    expect(movimientos, isEmpty);
-  });
+      expect(consultada.path, '/api/movimientos');
+      expect(consultada.queryParameters, {'limite': '5'});
+      expect(movimiento.descripcion, 'Pago de nómina');
+      expect(movimiento.esIngreso, isTrue);
+      expect(movimiento.categoria, CategoriaMovimiento.sueldo);
+      expect(movimiento.fecha.isUtc, isFalse);
+      expect(movimiento.fecha.toUtc().hour, 9);
+    },
+  );
 
   test('una categoría que la app no conoce se muestra como "Otros"', () {
     final movimiento = Movimiento.fromJson({

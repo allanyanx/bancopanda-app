@@ -1,5 +1,7 @@
+import '../../model/cuenta.dart';
 import '../../model/movimiento.dart';
 import '../../model/resumen_dashboard.dart';
+import '../../model/tarjeta.dart';
 import '../datasources/dashboard_data_source.dart';
 
 class DashboardRepository {
@@ -24,11 +26,10 @@ class DashboardRepository {
     );
   }
 
+  Future<List<Cuenta>> obtenerCuentas() => _dataSource.obtenerCuentas();
+
+  Future<List<Tarjeta>> obtenerTarjetas() => _dataSource.obtenerTarjetas();
+
   Future<List<Movimiento>> obtenerMovimientos({required int limite}) =>
       _dataSource.obtenerMovimientos(limite: limite);
-
-  Future<List<Movimiento>> obtenerMovimientosDeTarjeta(
-    String tarjetaId, {
-    required int limite,
-  }) => _dataSource.obtenerMovimientosDeTarjeta(tarjetaId, limite: limite);
 }

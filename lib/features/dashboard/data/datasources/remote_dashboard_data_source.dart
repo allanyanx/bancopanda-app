@@ -21,15 +21,6 @@ class RemoteDashboardDataSource implements DashboardDataSource {
   Future<List<Movimiento>> obtenerMovimientos({required int limite}) =>
       _lista('/api/movimientos?limite=$limite', Movimiento.fromJson);
 
-  @override
-  Future<List<Movimiento>> obtenerMovimientosDeTarjeta(
-    String tarjetaId, {
-    required int limite,
-  }) => _lista(
-    '/api/tarjetas/$tarjetaId/movimientos?limite=$limite',
-    Movimiento.fromJson,
-  );
-
   Future<List<T>> _lista<T>(
     String path,
     T Function(Map<String, dynamic> json) fromJson,

@@ -3,25 +3,23 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/utils/proximamente.dart';
 
 class DashboardBottomBar extends StatelessWidget {
   const DashboardBottomBar({super.key});
 
   static const _inicio = 0;
-  static const _movimientos = 2;
-  static const _cuenta = 3;
+  static const _tarjetas = 1;
+  static const _cuenta = 2;
 
   void _irA(BuildContext context, int indice) {
     switch (indice) {
-      case _inicio:
-        break;
-      case _movimientos:
-        context.push(AppRoutes.movements);
+      case _tarjetas:
+        context.push(AppRoutes.cards);
       case _cuenta:
         context.push(AppRoutes.profile);
+      case _inicio:
       default:
-        mostrarProximamente(context);
+        break;
     }
   }
 
@@ -58,10 +56,6 @@ class DashboardBottomBar extends StatelessWidget {
           BottomNavigationBarItem(
             icon: Icon(Icons.credit_card_outlined),
             label: 'Tarjetas',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.format_list_bulleted),
-            label: 'Movimientos',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person_outline),

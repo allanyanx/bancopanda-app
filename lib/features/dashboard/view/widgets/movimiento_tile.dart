@@ -17,6 +17,7 @@ class MovimientoTile extends StatelessWidget {
       CategoriaMovimiento.transporte => Icons.directions_bus_outlined,
       CategoriaMovimiento.compras => Icons.checkroom_outlined,
       CategoriaMovimiento.servicios => Icons.receipt_long_outlined,
+      CategoriaMovimiento.efectivoMovil => Icons.phone_android_outlined,
       CategoriaMovimiento.otros => Icons.account_balance_wallet_outlined,
     };
   }

@@ -46,4 +46,11 @@ void main() {
     expect(Formatters.expiracion(DateTime(2027, 5, 1)), '05/27');
     expect(Formatters.expiracion(DateTime(2030, 12, 31)), '12/30');
   });
+
+  test('fechaComprobante muestra día, mes, año y hora', () {
+    expect(
+      Formatters.fechaComprobante(DateTime(2026, 10, 16, 8, 5)),
+      '16 oct 2026, 08:05',
+    );
+  });
 }

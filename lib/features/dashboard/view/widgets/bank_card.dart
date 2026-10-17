@@ -10,7 +10,8 @@ class BankCard extends StatelessWidget {
     required this.tarjeta,
     required this.titular,
     required this.color,
-    required this.onTap,
+    this.numeroCompleto = false,
+    this.ancho = width,
   });
 
   static const width = 300.0;
@@ -19,7 +20,8 @@ class BankCard extends StatelessWidget {
   final Tarjeta tarjeta;
   final String titular;
   final Color color;
-  final VoidCallback onTap;
+  final bool numeroCompleto;
+  final double ancho;
 
   @override
   Widget build(BuildContext context) {
@@ -32,108 +34,107 @@ class BankCard extends StatelessWidget {
         color: color,
         borderRadius: BorderRadius.circular(20),
         clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          child: Container(
-            width: width,
-            height: height,
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text.rich(
-                        const TextSpan(
-                          text: 'Banco',
-                          children: [
-                            TextSpan(
-                              text: 'Panda',
-                              style: TextStyle(color: AppColors.accent),
-                            ),
-                          ],
-                        ),
-                        style: textTheme.titleMedium?.copyWith(
-                          color: AppColors.textOnDark,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    Text(
-                      tarjeta.nombre,
-                      style: textTheme.labelSmall?.copyWith(color: tenue),
-                    ),
-                  ],
-                ),
-                const Spacer(),
-                Row(
-                  children: [
-                    Container(
-                      width: 42,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: AppColors.surfaceMint.withValues(alpha: 0.85),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                    ),
-                    const SizedBox(width: 14),
-                    Text(
-                      tarjeta.numeroOculto,
-                      style: textTheme.bodyMedium?.copyWith(
-                        color: tenue,
-                        letterSpacing: 1.5,
-                      ),
-                    ),
-                    if (!tarjeta.activa) ...[
-                      const Spacer(),
-                      Text(
-                        'Inactiva',
-                        style: textTheme.labelMedium?.copyWith(
-                          color: AppColors.textOnDark,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-                const Spacer(),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+        child: Container(
+          width: ancho,
+          height: height,
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text.rich(
+                      const TextSpan(
+                        text: 'Banco',
                         children: [
-                          Text(
-                            Formatters.expiracion(tarjeta.fechaExpiracion),
-                            style: textTheme.labelSmall?.copyWith(color: tenue),
-                          ),
-                          Text(
-                            titular,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: textTheme.bodySmall?.copyWith(
-                              color: AppColors.textOnDark,
-                            ),
+                          TextSpan(
+                            text: 'Panda',
+                            style: TextStyle(color: AppColors.accent),
                           ),
                         ],
                       ),
-                    ),
-                    Text(
-                      tarjeta.marca.etiqueta.toUpperCase(),
-                      style: textTheme.titleLarge?.copyWith(
+                      style: textTheme.titleMedium?.copyWith(
                         color: AppColors.textOnDark,
-                        fontWeight: FontWeight.w800,
-                        fontStyle: FontStyle.italic,
-                        height: 1,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    tarjeta.nombre,
+                    style: textTheme.labelSmall?.copyWith(color: tenue),
+                  ),
+                ],
+              ),
+              const Spacer(),
+              Row(
+                children: [
+                  Container(
+                    width: 42,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: AppColors.surfaceMint.withValues(alpha: 0.85),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Text(
+                    numeroCompleto
+                        ? tarjeta.numeroFormateado
+                        : tarjeta.numeroOculto,
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: tenue,
+                      letterSpacing: 1.5,
+                    ),
+                  ),
+                  if (!tarjeta.activa) ...[
+                    const Spacer(),
+                    Text(
+                      'Inactiva',
+                      style: textTheme.labelMedium?.copyWith(
+                        color: AppColors.textOnDark,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ],
-                ),
-              ],
-            ),
+                ],
+              ),
+              const Spacer(),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          Formatters.expiracion(tarjeta.fechaExpiracion),
+                          style: textTheme.labelSmall?.copyWith(color: tenue),
+                        ),
+                        Text(
+                          titular,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: textTheme.bodySmall?.copyWith(
+                            color: AppColors.textOnDark,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Text(
+                    tarjeta.marca.etiqueta.toUpperCase(),
+                    style: textTheme.titleLarge?.copyWith(
+                      color: AppColors.textOnDark,
+                      fontWeight: FontWeight.w800,
+                      fontStyle: FontStyle.italic,
+                      height: 1,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),

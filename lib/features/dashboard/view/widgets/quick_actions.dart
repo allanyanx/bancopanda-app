@@ -1,29 +1,55 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/utils/proximamente.dart';
 
 class QuickActions extends StatelessWidget {
-  const QuickActions({super.key});
+  const QuickActions({
+    super.key,
+    required this.onTransferir,
+    required this.onEfectivoMovil,
+    required this.onPagarServicios,
+    required this.onRecibirDinero,
+  });
 
-  static const _acciones = [
-    (icono: Icons.swap_horiz_rounded, etiqueta: 'Transferir'),
-    (icono: Icons.file_download_outlined, etiqueta: 'Efectivo móvil'),
-    (icono: Icons.assignment_outlined, etiqueta: 'Pagar servicios'),
-    (icono: Icons.inventory_2_outlined, etiqueta: 'Recibir dinero'),
-  ];
+  final VoidCallback onTransferir;
+  final VoidCallback onEfectivoMovil;
+  final VoidCallback onPagarServicios;
+  final VoidCallback onRecibirDinero;
 
   @override
   Widget build(BuildContext context) {
+    final acciones = [
+      (
+        icono: Icons.swap_horiz_rounded,
+        etiqueta: 'Transferir',
+        onTap: onTransferir,
+      ),
+      (
+        icono: Icons.file_download_outlined,
+        etiqueta: 'Efectivo móvil',
+        onTap: onEfectivoMovil,
+      ),
+      (
+        icono: Icons.assignment_outlined,
+        etiqueta: 'Pagar servicios',
+        onTap: onPagarServicios,
+      ),
+      (
+        icono: Icons.inventory_2_outlined,
+        etiqueta: 'Recibir dinero',
+        onTap: onRecibirDinero,
+      ),
+    ];
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        for (final accion in _acciones)
+        for (final accion in acciones)
           Expanded(
             child: _QuickAction(
               icono: accion.icono,
               etiqueta: accion.etiqueta,
-              onTap: () => mostrarProximamente(context),
+              onTap: accion.onTap,
             ),
           ),
       ],

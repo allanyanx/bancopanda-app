@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/view/login_screen.dart';
 import '../../features/auth/view/register_screen.dart';
 import '../../features/auth/viewmodel/auth_view_model.dart';
-import '../../features/dashboard/model/tarjeta.dart';
 import '../../features/dashboard/view/dashboard_screen.dart';
 import '../../features/dashboard/view/movements_screen.dart';
 import '../../features/settings/view/server_settings_screen.dart';
@@ -13,6 +12,10 @@ import '../../features/profile/view/security_screen.dart';
 import '../../features/auth/view/welcome_screen.dart';
 import '../../features/profile/view/change_password_screen.dart';
 import '../../features/profile/view/preferences_screen.dart';
+import '../../features/transfers/view/transfer_screen.dart';
+import '../../features/mobile_cash/view/mobile_cash_screen.dart';
+import '../../features/services/view/pay_services_screen.dart';
+import '../../features/cards/view/cards_screen.dart';
 
 abstract final class AppRoutes {
   static const login = '/login';
@@ -26,6 +29,10 @@ abstract final class AppRoutes {
   static const welcome = '/bienvenida';
   static const profilePassword = '/perfil/seguridad/contrasena';
   static const profileSettings = '/perfil/configuracion';
+  static const transfer = '/transferir';
+  static const mobileCash = '/efectivo-movil';
+  static const payServices = '/pagar-servicios';
+  static const cards = '/tarjetas';
 }
 
 GoRouter createAppRouter(AuthViewModel auth) {
@@ -91,9 +98,24 @@ GoRouter createAppRouter(AuthViewModel auth) {
         ],
       ),
       GoRoute(
+        path: AppRoutes.transfer,
+        builder: (context, state) => const TransferScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.mobileCash,
+        builder: (context, state) => const MobileCashScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.payServices,
+        builder: (context, state) => const PayServicesScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.cards,
+        builder: (context, state) => const CardsScreen(),
+      ),
+      GoRoute(
         path: AppRoutes.movements,
-        builder: (context, state) =>
-            MovementsScreen(tarjeta: state.extra as Tarjeta?),
+        builder: (context, state) => const MovementsScreen(),
       ),
     ],
   );

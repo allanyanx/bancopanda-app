@@ -36,6 +36,12 @@ abstract final class Formatters {
   static String expiracion(DateTime fecha) =>
       '${_dosDigitos(fecha.month)}/${_dosDigitos(fecha.year % 100)}';
 
+  static String fechaComprobante(DateTime fecha) {
+    final local = fecha.toLocal();
+    return '${local.day} ${_meses[local.month - 1]} ${local.year}, '
+        '${_dosDigitos(local.hour)}:${_dosDigitos(local.minute)}';
+  }
+
   static DateTime _soloFecha(DateTime fecha) =>
       DateTime.utc(fecha.year, fecha.month, fecha.day);
 

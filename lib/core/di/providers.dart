@@ -7,8 +7,12 @@ import '../../features/auth/viewmodel/auth_view_model.dart';
 import '../../features/dashboard/data/datasources/remote_dashboard_data_source.dart';
 import '../../features/dashboard/data/repositories/dashboard_repository.dart';
 import '../../features/profile/data/datasources/remote_profile_data_source.dart';
+import '../../features/mobile_cash/data/datasources/remote_mobile_cash_data_source.dart';
+import '../../features/mobile_cash/data/repositories/mobile_cash_repository.dart';
 import '../../features/profile/data/repositories/profile_repository.dart';
 import '../../features/profile/viewmodel/profile_view_model.dart';
+import '../../features/transfers/data/datasources/remote_transfers_data_source.dart';
+import '../../features/transfers/data/repositories/transfers_repository.dart';
 import '../config/app_settings.dart';
 import '../network/api_client.dart';
 import '../storage/key_value_storage.dart';
@@ -45,9 +49,19 @@ Future<List<SingleChildWidget>> createProviders() async {
     RemoteDashboardDataSource(apiClient),
   );
 
+  final transfersRepository = TransfersRepository(
+    RemoteTransfersDataSource(apiClient),
+  );
+
+  final mobileCashRepository = MobileCashRepository(
+    RemoteMobileCashDataSource(apiClient),
+  );
+
   return [
     ChangeNotifierProvider.value(value: settings),
     Provider.value(value: dashboardRepository),
+    Provider.value(value: transfersRepository),
+    Provider.value(value: mobileCashRepository),
     ChangeNotifierProvider.value(value: authViewModel),
     ChangeNotifierProvider.value(value: profileViewModel),
     ChangeNotifierProvider.value(value: themeViewModel),

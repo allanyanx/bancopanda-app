@@ -118,8 +118,7 @@ class BalanceCard extends StatelessWidget {
                     ),
                     child: _CuentaRow(
                       cuenta: cuenta,
-                      mostrarSaldo: cuentas.length > 1,
-                      saldoVisible: saldoVisible,
+                      numeroVisible: saldoVisible,
                     ),
                   ),
               ],
@@ -132,15 +131,17 @@ class BalanceCard extends StatelessWidget {
 }
 
 class _CuentaRow extends StatelessWidget {
-  const _CuentaRow({
-    required this.cuenta,
-    required this.mostrarSaldo,
-    required this.saldoVisible,
-  });
+  const _CuentaRow({required this.cuenta, required this.numeroVisible});
 
   final Cuenta cuenta;
-  final bool mostrarSaldo;
-  final bool saldoVisible;
+  final bool numeroVisible;
+
+  String get _numero {
+    final numero = cuenta.numeroCuenta;
+    return numeroVisible
+        ? numero
+        : '•••• ${numero.substring(numero.length - 4)}';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -159,7 +160,7 @@ class _CuentaRow extends StatelessWidget {
                 style: textTheme.bodySmall?.copyWith(color: tenue),
               ),
               Text(
-                cuenta.numeroCuenta,
+                _numero,
                 style: textTheme.bodyLarge?.copyWith(
                   color: AppColors.textOnDark,
                 ),
@@ -167,21 +168,10 @@ class _CuentaRow extends StatelessWidget {
             ],
           ),
         ),
-        if (mostrarSaldo)
-          Text(
-            saldoVisible
-                ? Formatters.moneda(cuenta.saldo)
-                : BalanceCard.saldoOculto,
-            style: textTheme.bodyLarge?.copyWith(
-              color: AppColors.textOnDark,
-              fontWeight: FontWeight.w600,
-            ),
-          )
-        else
-          const Icon(
-            Icons.account_balance_wallet_outlined,
-            color: AppColors.primary,
-          ),
+        const Icon(
+          Icons.account_balance_wallet_outlined,
+          color: AppColors.primary,
+        ),
       ],
     );
   }

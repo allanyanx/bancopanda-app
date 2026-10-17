@@ -24,12 +24,13 @@ const cuentaCorriente = Cuenta(
 
 final tarjetaVisa = Tarjeta(
   tarjetaId: 't1',
-  ultimosDigitos: '4821',
+  numeroTarjeta: '4754009171454821',
   marca: MarcaTarjeta.visa,
   tipo: TipoTarjeta.debito,
   fechaExpiracion: DateTime(2029, 10, 13),
   activa: true,
   cuentaId: 'c1',
+  numeroCuenta: '5000900001',
   saldo: 12456.80,
   moneda: 'USD',
 );
@@ -47,9 +48,9 @@ final movimientoComida = Movimiento(
 class FakeDashboardDataSource implements DashboardDataSource {
   AppException? error;
   Completer<void>? espera;
+  List<Cuenta> cuentas = [cuentaAhorros, cuentaCorriente];
 
   int? limiteConsultado;
-  String? tarjetaConsultada;
 
   Future<T> _responder<T>(T valor) async {
     await espera?.future;
@@ -58,24 +59,13 @@ class FakeDashboardDataSource implements DashboardDataSource {
   }
 
   @override
-  Future<List<Cuenta>> obtenerCuentas() =>
-      _responder([cuentaAhorros, cuentaCorriente]);
+  Future<List<Cuenta>> obtenerCuentas() => _responder(cuentas);
 
   @override
   Future<List<Tarjeta>> obtenerTarjetas() => _responder([tarjetaVisa]);
 
   @override
   Future<List<Movimiento>> obtenerMovimientos({required int limite}) {
-    limiteConsultado = limite;
-    return _responder([movimientoComida]);
-  }
-
-  @override
-  Future<List<Movimiento>> obtenerMovimientosDeTarjeta(
-    String tarjetaId, {
-    required int limite,
-  }) {
-    tarjetaConsultada = tarjetaId;
     limiteConsultado = limite;
     return _responder([movimientoComida]);
   }

@@ -13,14 +13,17 @@ enum CategoriaMovimiento {
   transporte('Transporte'),
   compras('Compras'),
   servicios('Servicios'),
+  efectivoMovil('Efectivo móvil'),
   otros('Otros');
 
   const CategoriaMovimiento(this.etiqueta);
 
   final String etiqueta;
 
-  static CategoriaMovimiento fromJson(String valor) =>
-      values.asNameMap()[valor.toLowerCase()] ?? otros;
+  static CategoriaMovimiento fromJson(String valor) => values.firstWhere(
+    (c) => c.name.toLowerCase() == valor.toLowerCase(),
+    orElse: () => otros,
+  );
 }
 
 class Movimiento {

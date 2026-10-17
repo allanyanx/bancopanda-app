@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/utils/proximamente.dart';
+import '../../../core/widgets/status_dialog.dart';
 import '../../auth/viewmodel/auth_view_model.dart';
 import '../data/repositories/dashboard_repository.dart';
 import '../model/resumen_dashboard.dart';
@@ -103,6 +103,21 @@ class _DashboardContent extends StatelessWidget {
   final bool saldoVisible;
   final VoidCallback onAlternarSaldo;
 
+  /// Abre una pantalla que mueve dinero y, al volver de cualquier forma,
+  /// recarga el inicio para que el saldo nunca quede desactualizado.
+  Future<void> _abrirYRecargar(BuildContext context, String ruta) async {
+    final vm = context.read<DashboardViewModel>();
+    await context.push<bool>(ruta);
+    await vm.cargar();
+  }
+
+  void _recibirDinero(BuildContext context) => mostrarEstado(
+    context,
+    icono: Icons.public,
+    titulo: 'Próximamente',
+    mensaje: 'Próximamente podrás recibir dinero del extranjero.',
+  );
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -120,13 +135,22 @@ class _DashboardContent extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 20),
-        const Padding(padding: _lateral, child: QuickActions()),
+        Padding(
+          padding: _lateral,
+          child: QuickActions(
+            onTransferir: () => _abrirYRecargar(context, AppRoutes.transfer),
+            onEfectivoMovil: () =>
+                _abrirYRecargar(context, AppRoutes.mobileCash),
+            onPagarServicios: () => context.push(AppRoutes.payServices),
+            onRecibirDinero: () => _recibirDinero(context),
+          ),
+        ),
         const SizedBox(height: 20),
         Padding(
           padding: _lateral,
           child: SectionHeader(
             titulo: 'Mis Tarjetas',
-            onVerMas: () => mostrarProximamente(context),
+            onVerMas: () => context.push(AppRoutes.cards),
           ),
         ),
         const SizedBox(height: 8),
@@ -134,8 +158,6 @@ class _DashboardContent extends StatelessWidget {
           tarjetas: resumen.tarjetas,
           titular: titular,
           padding: _margen,
-          onTarjeta: (tarjeta) =>
-              context.push(AppRoutes.movements, extra: tarjeta),
         ),
         const SizedBox(height: 20),
         Padding(

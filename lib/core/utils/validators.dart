@@ -1,4 +1,8 @@
+import 'formatters.dart';
+
 abstract final class Validators {
+  static final _numeroCuentaRegex = RegExp(r'^\d{6,20}$');
+  static final _montoRegex = RegExp(r'^\d+(\.\d{1,2})?$');
   static final _nombreRegex = RegExp(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]{2,60}$');
   static final _cedulaRegex = RegExp(r'^\d{10}$');
   static final _celularRegex = RegExp(r'^9\d{8}$');
@@ -104,5 +108,47 @@ abstract final class Validators {
         (uri.scheme == 'http' || uri.scheme == 'https') &&
         uri.host.isNotEmpty;
     return esValida ? null : 'Usa el formato http://host:puerto';
+  }
+
+  static String? numeroCuenta(String? value) {
+    final texto = value?.trim() ?? '';
+    if (texto.isEmpty) return 'Ingresa el número de cuenta';
+    if (!_numeroCuentaRegex.hasMatch(texto)) {
+      return 'El número de cuenta debe tener entre 6 y 20 dígitos';
+    }
+    return null;
+  }
+
+  static String? cedulaBeneficiario(String? value) {
+    final texto = value?.trim() ?? '';
+    if (texto.isEmpty) return 'Ingresa la cédula del beneficiario';
+    if (!_cedulaRegex.hasMatch(texto)) return 'La cédula debe tener 10 dígitos';
+    return null;
+  }
+
+  static String? nombreOpcional(String? value) {
+    final texto = value?.trim() ?? '';
+    if (texto.isEmpty) return null;
+    return _nombreRegex.hasMatch(texto) ? null : 'Solo letras, mínimo 2';
+  }
+
+  static String? monto(
+    String? value, {
+    required double disponible,
+    required double maximo,
+  }) {
+    final texto = value?.trim() ?? '';
+    if (texto.isEmpty) return 'Ingresa el monto';
+    if (!_montoRegex.hasMatch(texto)) {
+      return 'Escribe un monto válido, con máximo 2 decimales';
+    }
+
+    final monto = double.parse(texto);
+    if (monto <= 0) return 'El monto debe ser mayor a cero';
+    if (monto > maximo) {
+      return 'El máximo por operación es ${Formatters.moneda(maximo)}';
+    }
+    if (monto > disponible) return 'No tienes saldo suficiente';
+    return null;
   }
 }

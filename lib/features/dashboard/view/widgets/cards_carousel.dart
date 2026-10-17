@@ -10,13 +10,11 @@ class CardsCarousel extends StatelessWidget {
     required this.tarjetas,
     required this.titular,
     required this.padding,
-    required this.onTarjeta,
   });
 
   final List<Tarjeta> tarjetas;
   final String titular;
   final double padding;
-  final ValueChanged<Tarjeta> onTarjeta;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +49,6 @@ class CardsCarousel extends StatelessWidget {
           tarjeta: tarjetas[index],
           titular: titular,
           color: colores[index % colores.length],
-          onTap: () => onTarjeta(tarjetas[index]),
         ),
       ),
     );
