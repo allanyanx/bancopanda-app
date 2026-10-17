@@ -17,4 +17,9 @@ void main() {
   test('sin teléfono devuelve vacío', () {
     expect(Celular.local(null), '');
   });
+
+  test('oculta el celular para mostrarlo en pantalla', () {
+    expect(Celular.oculto('+593987654321'), '+593 9XX XXX 321');
+    expect(Celular.ocultoLocal('+593987654321'), '09X-XXX-X321');
+  });
 }

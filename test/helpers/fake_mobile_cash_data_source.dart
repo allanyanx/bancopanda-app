@@ -18,10 +18,11 @@ class FakeMobileCashDataSource implements MobileCashDataSource {
     if (error != null) throw error!;
     return EfectivoMovil(
       efectivoMovilId: 'em1',
-      codigo: '654243',
+      primerCodigo: '1274',
+      segundoCodigo: '9519',
       monto: solicitud.monto,
       moneda: 'USD',
-      telefonoDestino: solicitud.telefonoDestino,
+      telefonoDestino: solicitud.telefonoDestino ?? '+593987654321',
       fechaCreacion: DateTime(2026, 10, 16, 21, 15),
       fechaExpiracion: DateTime(2026, 10, 17, 21, 15),
       estado: 'Pendiente',

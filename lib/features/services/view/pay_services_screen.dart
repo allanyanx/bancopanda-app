@@ -10,23 +10,16 @@ class PayServicesScreen extends StatelessWidget {
 
   static const _servicios = [
     (
-      icono: Icons.lightbulb_outline,
-      nombre: 'Luz eléctrica',
-      empresa: 'CNEL EP',
-    ),
-    (
       icono: Icons.water_drop_outlined,
       nombre: 'Agua potable',
       empresa: 'Interagua',
     ),
-    (icono: Icons.wifi, nombre: 'Internet', empresa: 'Netlife'),
     (
-      icono: Icons.smartphone,
-      nombre: 'Recarga celular',
-      empresa: 'Claro · Movistar · CNT',
+      icono: Icons.lightbulb_outline,
+      nombre: 'Luz eléctrica',
+      empresa: 'CNEL EP',
     ),
-    (icono: Icons.phone_outlined, nombre: 'Teléfono fijo', empresa: 'CNT'),
-    (icono: Icons.tv_outlined, nombre: 'TV por cable', empresa: 'DirecTV'),
+    (icono: Icons.wifi, nombre: 'Internet', empresa: 'Netlife'),
   ];
 
   @override
@@ -53,30 +46,23 @@ class PayServicesScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            GridView.count(
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              mainAxisSpacing: 14,
-              crossAxisSpacing: 14,
-              childAspectRatio: 1.05,
-              children: [
-                for (final servicio in _servicios)
-                  _ServicioTile(
-                    icono: servicio.icono,
-                    nombre: servicio.nombre,
-                    empresa: servicio.empresa,
-                    onTap: () => mostrarEstado(
-                      context,
-                      icono: Icons.check_rounded,
-                      titulo: 'Pago realizado',
-                      mensaje:
-                          'Tu pago de ${servicio.nombre} (${servicio.empresa}) '
-                          'se realizó con éxito.',
-                    ),
+            for (final servicio in _servicios)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 14),
+                child: _ServicioTile(
+                  icono: servicio.icono,
+                  nombre: servicio.nombre,
+                  empresa: servicio.empresa,
+                  onTap: () => mostrarEstado(
+                    context,
+                    icono: Icons.check_rounded,
+                    titulo: 'Pago realizado',
+                    mensaje:
+                        'Tu pago de ${servicio.nombre} (${servicio.empresa}) '
+                        'se realizó con éxito.',
                   ),
-              ],
-            ),
+                ),
+              ),
           ],
         ),
       ),
@@ -115,12 +101,11 @@ class _ServicioTile extends StatelessWidget {
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
               Container(
-                width: 48,
-                height: 48,
+                width: 52,
+                height: 52,
                 decoration: BoxDecoration(
                   color: isDark ? AppColors.cardGreen : AppColors.surfaceMint,
                   borderRadius: BorderRadius.circular(14),
@@ -130,21 +115,27 @@ class _ServicioTile extends StatelessWidget {
                   color: isDark ? AppColors.accent : AppColors.primaryDeep,
                 ),
               ),
-              const Spacer(),
-              Text(
-                nombre,
-                style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w600,
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      nombre,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      empresa,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              Text(
-                empresa,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-              ),
+              const Icon(Icons.chevron_right, color: AppColors.textSecondary),
             ],
           ),
         ),

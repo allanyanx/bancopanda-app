@@ -10,16 +10,21 @@ import 'package:bancopanda_app/features/auth/viewmodel/auth_view_model.dart';
 import 'in_memory_storage.dart';
 
 class _FakeAuthDataSource implements AuthDataSource {
+  _FakeAuthDataSource({this.telefono});
+
+  final String? telefono;
+
   Sesion get _sesion => Sesion(
     token: 'token-de-prueba',
     expiraEn: DateTime.now().toUtc().add(const Duration(hours: 1)),
-    usuario: const Usuario(
+    usuario: Usuario(
       usuarioId: '01a1275f-f1f4-7253-b408-302f76430b92',
       nombreUsuario: 'andrea.barroso',
       nombres: 'Andrea',
       apellidos: 'Barroso Torres',
       cedula: '1234567890',
       correo: 'prueba@bancopanda.test',
+      telefono: telefono,
     ),
   );
 
@@ -33,11 +38,11 @@ class _FakeAuthDataSource implements AuthDataSource {
   Future<Sesion> register(DatosRegistro datos) async => _sesion;
 }
 
-Future<AuthViewModel> authConSesionIniciada() async {
+Future<AuthViewModel> authConSesionIniciada({String? telefono}) async {
   final storage = InMemoryStorage();
   final auth = AuthViewModel(
     AuthRepository(
-      dataSource: _FakeAuthDataSource(),
+      dataSource: _FakeAuthDataSource(telefono: telefono),
       storage: storage,
       apiClient: ApiClient(settings: AppSettings(storage)),
     ),
